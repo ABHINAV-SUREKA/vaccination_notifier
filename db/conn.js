@@ -1,9 +1,12 @@
-const mongoClient = require("mongodb");
-var url = "mongodb://localhost:27017/users"
+/*
+const mongodb = require("mongodb").MongoClient;
 
-mongoClient.connect(url,(error, result) => {
-    if (error)
-        throw error;
-    console.log("Database created");
-    result.close();
-});
+module.exports = function() {
+    this.url = "mongodb://localhost:27017";
+    mongodb.connect(this.url,(error, client) => {
+        if (error)
+            throw error;
+        console.log("Connected to mongoDB");
+        this.client = client;
+    });
+}*/

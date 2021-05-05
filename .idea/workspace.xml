@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9d597380-0272-44fb-b88e-20962fe3a7ce" name="Default Changelist" comment="" />
+    <list default="true" id="9d597380-0272-44fb-b88e-20962fe3a7ce" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/public/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/scripts/all-plugins.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/scripts/jquery-3.2.1.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/conn.js" beforeDir="false" afterPath="$PROJECT_DIR$/db/conn.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,7 +24,11 @@
     </option>
   </component>
   <component name="GOROOT" path="/usr/local/go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="1s4hlXy72QrQ0S2B2uARyryWIpQ" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -28,9 +41,14 @@
     <property name="go.sdk.automatically.set" value="true" />
     <property name="javascript.nodejs.core.library.configured.version" value="14.16.1" />
     <property name="javascript.nodejs.core.library.typings.version" value="14.14.43" />
-    <property name="last_opened_file_path" value="$USER_HOME$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/public" />
     <property name="nodejs_interpreter_path" value="node" />
     <property name="nodejs_package_manager_path" value="npm" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/public" />
+    </key>
   </component>
   <component name="RunManager">
     <configuration name="app.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/app.js" working-dir="$PROJECT_DIR$">
@@ -47,6 +65,14 @@
     <option name="version" value="3" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="696" y="423" key="Github.ShareDialog" timestamp="1620140371598">
+      <screen x="0" y="23" width="1792" height="1019" />
+    </state>
+    <state x="696" y="423" key="Github.ShareDialog/0.23.1792.1019@0.23.1792.1019" timestamp="1620140371598" />
+    <state x="651" y="231" key="Github.UntrackedFilesDialog" timestamp="1620140377060">
+      <screen x="0" y="23" width="1792" height="1019" />
+    </state>
+    <state x="651" y="231" key="Github.UntrackedFilesDialog/0.23.1792.1019@0.23.1792.1019" timestamp="1620140377060" />
     <state width="1507" height="269" key="GridCell.Tab.0.bottom" timestamp="1620138077651">
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
