@@ -6,9 +6,11 @@ const express = require("express")
     , mongodb = require('mongodb').MongoClient
     , cron = require('node-cron')
     , nodemon = require("nodemon")
+    , fs = require('fs')
     , dateFormat = require("dateformat")
     , path = require("path")
-    , static_path = path.join(__dirname, "public");
+    , static_path = path.join(__dirname, "public")
+    , cowin = require("./cowin");
 
 app.use(express.static(static_path));
 app.use(bodyParser.json());
@@ -37,14 +39,15 @@ let transport = nodemailer.createTransport({
 
 
 // Send periodic emails to subscribers
-cron.schedule("*/1 * * * *", () => {
+cron.schedule("*/1 * * * *", async () => {
     console.log("cron running");
-    database.collection("users").find({}).toArray(function (error, result) {
+    await database.collection("users").find({}).toArray(function (error, result) {
         if (error) throw error;
         result.forEach(element => {
-            if (checkSlots(element)) {
+            let centerFilteredData = checkSlots(element).catch((error) => {console.log(error);});
+            if (centerFilteredData) {
                 if (!element.hasOwnProperty("last_notified_ts") || element.last_notified_ts.toString().length == 0) {
-                    emailNotifier(element.email, (error) => {
+                    emailNotifier(element.email, centerFilteredData, (error) => {
                         console.log(error);
                     })
                         .then((promise) => {
@@ -127,39 +130,68 @@ cron.schedule("*/1 * * * *", () => {
 let checkSlots = async (element) => {
     let centerFilteredData = [];
     if (element.location && element.location == "pincode") {
-        let slots_calender_by_pin_data = await slotsCalenderByPin(element);
+        let slots_calender_by_pin_data = await cowin.slotsCalenderByPin(element);
         let sessionFilteredData = await slots_calender_by_pin_data.centers.map((center) => {
             return {...center, sessions: center.sessions.filter(session => session.min_age_limit <= parseInt(element.age) &&  session.available_capacity > 0)};
         });
         centerFilteredData = await sessionFilteredData.filter(center => center.sessions.length > 0);
-        return await centerFilteredData;
+        console.log(centerFilteredData);
+        return centerFilteredData;
     } else if(element.location && element.location == "district") {
-        let slots_calender_by_district_data = await slotsCalenderByDistrict(element);
+        let slots_calender_by_district_data = await cowin.slotsCalenderByDistrict(element);
         let sessionFilteredData = await slots_calender_by_district_data.centers.map((center) => {
             return {...center, sessions: center.sessions.filter(session => session.min_age_limit <= parseInt(element.age) &&  session.available_capacity > 0)};
         });
         let centerFilteredData = await sessionFilteredData.filter(center => center.sessions.length > 0);
-        return await centerFilteredData;
+        return centerFilteredData;
     } else if(element.location && element.location == "state") {
-        let slots_calender_by_state_data = await slotsCalenderByState(element);
+        let slots_calender_by_state_data = await cowin.slotsCalenderByState(element).catch((error) => console.log(error));
         let sessionFilteredData = await slots_calender_by_state_data.map((center) => {
             return {...center, sessions: center.sessions.filter(session => session.min_age_limit <= parseInt(element.age) &&  session.available_capacity > 0)};
         });
         let centerFilteredData = await sessionFilteredData.filter(center => center.sessions.length > 0);
-        return await centerFilteredData;
+        return centerFilteredData;
     }
 }
 // Send email notification
-let emailNotifier = async (toEmail,callback) => {
+let emailNotifier = async (toEmail,centerFilteredData,callback) => {
     const text = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head>" +
         "<body>" +
         "<h1>Vaccination available near you!</h1><p>Get your vaccine today!</p>" +
         "</body></html>";
+    console.log(centerFilteredData);
+    let rows = ``;
+    for (i=0;i<centerFilteredData.length;i++){
+        let row = `<tr>
+                      <td>`+centerFilteredData[i].name+`</td>
+                      <td>`+centerFilteredData[i].district_name+`</td>
+                      <td>`+centerFilteredData[i].pincode+`</td>
+                      <td>`+centerFilteredData[i].sessions+`</td>
+                      <td>`+centerFilteredData[i].fee_type+`</td>
+                    </tr>
+                     `;
+        rows = rows + row;
+    }
+    let html = `
+          <html>
+            <head><title>Test-email</title></head><body>
+            <h3> Available Slots </h3>
+            <table id="tests">
+                <tr>
+                    <th>Center-Name</th>
+                    <th>District</th>
+                    <th>Pincode</th>
+                    <th>Vaccine</th>
+                    <th>Fee</th>
+                </tr>
+                 `+rows+`
+            </table></body></html>`;
     const message = {
         from: "no-reply@vaccination.notifier.com",
         to: toEmail,
         subject: "Vaccination availability near you",
-        text: text
+        text: text,
+        html: html,
     };
     const notifiedTimestamp = Date.now();
     await transport.sendMail(message, (error, result) => { // transport.sendMail() uses callback that's why await won't work here
@@ -230,57 +262,7 @@ let getDistricts = async (stateId) => {
     }
 };
 
-// Fetch info from Cowin
-let slotsCalenderByPin = async (element) => {
-    let config = {
-        method: "get",
-        url: "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=" + element.location_value + "&date=" + dateFormat(new Date(), "dd-mm-yyyy"),
-        headers: {
-            "accept": "application/json",
-            "Accept-Language": "hi_IN",
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
-        }
-    }
-    let response = await axios(config);
-    return await response.data;
-};
 
-// Fetch info from Cowin
-let slotsCalenderByDistrict = async (element) => {
-    let config = {
-        method: "get",
-        url: "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=" + element.location_value + "&date=" + dateFormat(new Date(), "dd-mm-yyyy"),
-        headers: {
-            "accept": "application/json",
-            "Accept-Language": "hi_IN",
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
-        }
-    }
-    let response = await axios(config);
-    return await response.data;
-};
-
-// Fetch info from Cowin
-let slotsCalenderByState = async (element) => {
-    let promised_district_data = await getDistricts(element.location_value);
-    let combinedDistrictDataList = [];
-    console.log(promised_district_data);
-    for (i = 0; i < promised_district_data.districts.length; i++) {
-        let config = {
-            method: "get",
-            url: "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=" + promised_district_data.districts[i].district_id + "&date=" + dateFormat(new Date(), "dd-mm-yyyy"),
-            headers: {
-                "accept": "application/json",
-                "Accept-Language": "hi_IN",
-                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
-            }
-        }
-        let response = await axios(config);
-        console.log(response.data);
-        await combinedDistrictDataList.push(response.data.centers)
-    }
-    return await combinedDistrictDataList;
-};
 
 // Handling server side request and response
 app.get("/", (request,response) => {
@@ -311,7 +293,6 @@ app.post("/action",(request,response) => {
                     age: request.body.age,
                     location: request.body.location,
                     location_value: request.body.location_value,
-                    last_notified_ts: Date.now(),
                 }, (error, result) => {
                     if (error) throw error;
                     if (result.insertedCount == 1)
