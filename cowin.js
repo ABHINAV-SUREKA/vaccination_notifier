@@ -30,13 +30,27 @@ let slotsCalenderByDistrict = async (element) => {
     return await response.data;
 };
 
-let slotsCalenderByState = async (element) => {
-    let promised_district_data = await getDistricts(element.location_value);
-    let combinedDistrictDataList = [];
-    for (i = 0; i < promised_district_data.districts.length; i++) {
+let getStates = async () => {
+    let config = {
+        method: "get",
+        url: "https://cdn-api.co-vin.in/api/v2/admin/location/states",
+        headers: {
+            "accept": "application/json",
+            "Accept-Language": "hi_IN",
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
+        }
+    }
+    let response = await axios(config);
+    return await response.data;
+};
+
+let getAllDistricts = async () => {
+    let promised_state_data = await getStates();
+    let combinedStateDistrictDataList = [];
+    for (i = 0; i < promised_state_data.states.length; i++) {
         let config = {
             method: "get",
-            url: "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=" + promised_district_data.districts[i].district_id + "&date=" + dateFormat(new Date(), "dd-mm-yyyy"),
+            url: "https://cdn-api.co-vin.in/api/v2/admin/location/districts/" + promised_state_data.states[i].state_id,
             headers: {
                 "accept": "application/json",
                 "Accept-Language": "hi_IN",
@@ -44,11 +58,32 @@ let slotsCalenderByState = async (element) => {
             }
         }
         let response = await axios(config);
-        await combinedDistrictDataList.push(...response.data.centers);
+        let combinedStateDistrictData = {
+            state_id: promised_state_data.states[i].state_id,
+            state_name: promised_state_data.states[i].state_name,
+            districts: response.data.districts
+        };
+        await combinedStateDistrictDataList.push(combinedStateDistrictData);
     }
-    console.log(combinedDistrictDataList);
-    return combinedDistrictDataList;
+    console.log(combinedStateDistrictDataList);
+    return combinedStateDistrictDataList;
+};
+
+let getDistrictsByState = async (stateId) => {
+    if (stateId) {
+        let config = {
+            method: "get",
+            url: "https://cdn-api.co-vin.in/api/v2/admin/location/districts/" + parseInt(stateId),
+            headers: {
+                "accept": "application/json",
+                "Accept-Language": "hi_IN",
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
+            }
+        }
+        let response = await axios(config);
+        return await response.data;
+    }
 };
 
 
-module.exports = { slotsCalenderByPin, slotsCalenderByState, slotsCalenderByDistrict };
+module.exports = { slotsCalenderByPin, slotsCalenderByDistrict, getAllDistricts, getDistrictsByState };

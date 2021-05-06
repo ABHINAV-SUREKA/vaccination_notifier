@@ -144,13 +144,6 @@ let checkSlots = async (element) => {
         });
         let centerFilteredData = await sessionFilteredData.filter(center => center.sessions.length > 0);
         return centerFilteredData;
-    } else if(element.location && element.location == "state") {
-        let slots_calender_by_state_data = await cowin.slotsCalenderByState(element).catch((error) => console.log(error));
-        let sessionFilteredData = await slots_calender_by_state_data.map((center) => {
-            return {...center, sessions: center.sessions.filter(session => session.min_age_limit <= parseInt(element.age) &&  session.available_capacity > 0)};
-        });
-        let centerFilteredData = await sessionFilteredData.filter(center => center.sessions.length > 0);
-        return centerFilteredData;
     }
 }
 // Send email notification
@@ -207,75 +200,14 @@ let emailNotifier = async (toEmail,centerFilteredData,callback) => {
 }
 
 
-// Fetch info from Cowin
-let getStates = async () => {
-    let config = {
-        method: "get",
-        url: "https://cdn-api.co-vin.in/api/v2/admin/location/states",
-        headers: {
-            "accept": "application/json",
-            "Accept-Language": "hi_IN",
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
-        }
-    }
-    let response = await axios(config);
-    return await response.data;
-};
-
-// Fetch info from Cowin
-let getDistricts = async (stateId) => {
-    if (stateId == undefined) {
-        let promised_state_data = await getStates();
-        let combinedStateDistrictDataList = [];
-        for (i = 0; i < promised_state_data.states.length; i++) {
-            let config = {
-                method: "get",
-                url: "https://cdn-api.co-vin.in/api/v2/admin/location/districts/" + promised_state_data.states[i].state_id,
-                headers: {
-                    "accept": "application/json",
-                    "Accept-Language": "hi_IN",
-                    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
-                }
-            }
-            let response = await axios(config);
-            let combinedStateDistrictData = {
-                state_id: promised_state_data.states[i].state_id,
-                state_name: promised_state_data.states[i].state_name,
-                districts: response.data.districts
-            };
-            await combinedStateDistrictDataList.push(combinedStateDistrictData);
-        }
-        console.log(combinedStateDistrictDataList);
-        return combinedStateDistrictDataList;
-    } else if (stateId != "") {
-        let config = {
-            method: "get",
-            url: "https://cdn-api.co-vin.in/api/v2/admin/location/districts/" + parseInt(stateId),
-            headers: {
-                "accept": "application/json",
-                "Accept-Language": "hi_IN",
-                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
-            }
-        }
-        let response = await axios(config);
-        return await response.data;
-    }
-};
-
-
 
 // Handling server side request and response
 app.get("/", (request,response) => {
     response.sendFile(path.join(static_path, "/index.html"));
 });
 
-app.get("/state_list", async (request,response) => {
-    let promised_state_data = await getStates();
-    response.send(promised_state_data);
-});
-
 app.get("/district_list", async (request,response) => {
-    let promised_district_data = await getDistricts();
+    let promised_district_data = await cowin.getAllDistricts();
     response.send(promised_district_data);
 });
 

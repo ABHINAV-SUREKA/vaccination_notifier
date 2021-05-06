@@ -16,30 +16,7 @@
         $(function(){
             var state_data_block = "", district_data_block = "";
             $("#location").change(function() {
-                if ($("#location option:selected").val() == "state") {
-                    $("#location_value").replaceWith($("<select class=\"form-select col-lg-8\" name=\"location_value\" id=\"location_value\" required=\"\"><option value=\"\" disabled selected>Select State</option></select>"));
-                    if (state_data_block.trim()) {
-                        $("#location_value").append(state_data_block);
-                    } else {
-                        $.ajax({
-                            url: "state_list",
-                            type: "get",
-                            timeout: 5000,
-                        })
-                            .done((result) => {
-                                if (result) {
-                                    $.each(result.states, (i, obj) => {
-                                        let div_state_data = "<option value=" + obj.state_id + ">" + obj.state_name + "</option>";
-                                        $("#location_value").append(div_state_data);
-                                        state_data_block = state_data_block + div_state_data;
-                                    });
-                                } else {
-                                    alert("Unable to fetch data at this time");
-                                }
-                            })
-                            .fail(function (jqXHR, textStatus, error) { alert("Unable to fetch data at this time | " + error); });
-                    }
-                } else if ($("#location option:selected").val() == "district") {
+                if ($("#location option:selected").val() == "district") {
                     $("#location_value").replaceWith($("<select class=\"form-select col-lg-8\" name=\"location_value\" id=\"location_value\" required=\"\"><option value=\"\" disabled selected>Select District</option></select>"));
                     if (district_data_block.trim()) {
                         $("#location_value").append(district_data_block);
