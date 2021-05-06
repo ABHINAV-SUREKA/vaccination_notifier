@@ -6,6 +6,7 @@ const express = require("express")
     , mongodb = require('mongodb').MongoClient
     , cron = require('node-cron')
     , nodemon = require("nodemon")
+    , dateFormat = require("dateformat")
     , path = require("path")
     , static_path = path.join(__dirname, "public");
 
@@ -41,14 +42,12 @@ cron.schedule("*/1 * * * *", () => {
     database.collection("users").find({}).toArray(function (error, result) {
         if (error) throw error;
         result.forEach(element => {
-            //checkSlots(element);
+            checkSlots(element);
             if (!element.hasOwnProperty("last_notified_ts") || element.last_notified_ts.toString().length == 0) {
-                checkSlots(element);
                 emailNotifier(element.email,(error) => {console.log(error);})
                     .then((promise) => {console.log(promise)}) // .then() and .catch() are redundant here
                     .catch((error) => {console.log(error)});
             } else {
-                //checkSlots(element);
                 let timeDiffInMins = Math.abs((Date.now() - element.last_notified_ts)/(1000 * 60));
                 switch (element.frequency) {
                     case "every hour":
@@ -87,6 +86,24 @@ cron.schedule("*/1 * * * *", () => {
     });
 })
 
+// Check slots
+let checkSlots = async (element) => {
+    if (element.location && element.location == "pincode") {
+        let slots_calender_by_pin_data = await slotsCalenderByPin(element);
+        let sessionFilteredData = await slots_calender_by_pin_data.centers.map((center) => {
+            return {...center, sessions: center.sessions.filter(session => session.min_age_limit <= parseInt(element.age) &&  session.available_capacity > 0)};
+        });
+        let centerFilteredData = await sessionFilteredData.filter(center => center.sessions.length > 0);
+        console.log(centerFilteredData);
+    } else if(element.location && element.location == "district") {
+        let slots_calender_by_district_data = await slotsCalenderByDistrict(element);
+        let sessionFilteredData = await slots_calender_by_district_data.centers.map((center) => {
+            return {...center, sessions: center.sessions.filter(session => session.min_age_limit <= parseInt(element.age) &&  session.available_capacity > 0)};
+        });
+        let centerFilteredData = await sessionFilteredData.filter(center => center.sessions.length > 0);
+        console.log(centerFilteredData);
+    }
+}
 // Send email notification
 let emailNotifier = async (toEmail,callback) => {
     const text = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head>" +
@@ -154,6 +171,35 @@ let getDistricts = async () => {
     return combinedStateDistrictDataList;
 };
 
+// Fetch info from Cowin
+let slotsCalenderByPin = async (element) => {
+    let config = {
+        method: "get",
+        url: "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=" + element.location_value + "&date=" + dateFormat(new Date(), "dd-mm-yyyy"),
+        headers: {
+            "accept": "application/json",
+            "Accept-Language": "hi_IN",
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
+        }
+    }
+    let response = await axios(config);
+    return await response.data;
+};
+
+// Fetch info from Cowin
+let slotsCalenderByDistrict = async (element) => {
+    let config = {
+        method: "get",
+        url: "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=" + element.location_value + "&date=" + dateFormat(new Date(), "dd-mm-yyyy"),
+        headers: {
+            "accept": "application/json",
+            "Accept-Language": "hi_IN",
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
+        }
+    }
+    let response = await axios(config);
+    return await response.data;
+};
 
 // Handling server side request and response
 app.get("/", (request,response) => {
