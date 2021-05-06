@@ -17,7 +17,7 @@
             var state_data_block = "", district_data_block = "";
             $("#location").change(function() {
                 if ($("#location option:selected").val() == "state") {
-                    $("#location_value").replaceWith($("<select class=\"form-select col-lg-8\" name=\"location_value\" id=\"location_value\"><option value=\"\" disabled selected>Select State</option></select>"));
+                    $("#location_value").replaceWith($("<select class=\"form-select col-lg-8\" name=\"location_value\" id=\"location_value\" required=\"\"><option value=\"\" disabled selected>Select State</option></select>"));
                     if (state_data_block.trim()) {
                         $("#location_value").append(state_data_block);
                     } else {
@@ -40,7 +40,7 @@
                             .fail(function (jqXHR, textStatus, error) { alert("Unable to fetch data at this time | " + error); });
                     }
                 } else if ($("#location option:selected").val() == "district") {
-                    $("#location_value").replaceWith($("<select class=\"form-select col-lg-8\" name=\"location_value\" id=\"location_value\"><option value=\"\" disabled selected>Select District</option></select>"));
+                    $("#location_value").replaceWith($("<select class=\"form-select col-lg-8\" name=\"location_value\" id=\"location_value\" required=\"\"><option value=\"\" disabled selected>Select District</option></select>"));
                     if (district_data_block.trim()) {
                         $("#location_value").append(district_data_block);
                     } else {
@@ -48,9 +48,13 @@
                             url: "district_list",
                             type: "get",
                             timeout: 20000,
+                            beforeSend: function() {
+                                $("#location_value option:selected").text("Loading...");
+                            }
                         })
                             .done((result) => {
                                 if (result) {
+                                    $("#location_value option:selected").text("Select District");
                                     $.each(result, (i, stateObj) => {
                                         let div_state_data = "<option value=" + stateObj.state_id + " disabled>" + stateObj.state_name + "</option>";
                                         $("#location_value").append(div_state_data);
@@ -68,7 +72,7 @@
                             .fail(function (jqXHR, textStatus, error) { alert("Unable to fetch data at this time | " + textStatus + " | " + error); });
                     }
                 } else if ($("#location option:selected").val() == "pincode") {
-                    $("#location_value").replaceWith($("<input class=\"form-control\" type=\"number\" name=\"location_value\" id=\"location_value\" placeholder=\"Pincode\">"));
+                    $("#location_value").replaceWith($("<input class=\"form-control\" type=\"number\" name=\"location_value\" id=\"location_value\" placeholder=\"Pincode\" required=\"\" autofocus=\"\">"));
                 }
             });
         });
@@ -110,7 +114,7 @@
                             <option value="state">State</option>
                         </select>
                         <label class="sr-only" for="location_value" id="location_value_label">Pincode: </label>
-                        <input class="form-control" type="number" name="location_value" id="location_value" placeholder="Pincode">
+                        <input class="form-control" type="number" name="location_value" id="location_value" placeholder="Pincode" required="" autofocus="">
                     </div>
                 </div>
             </div>
