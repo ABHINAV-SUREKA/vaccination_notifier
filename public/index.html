@@ -30,7 +30,7 @@
                             }
                         })
                             .done((result) => {
-                                if (result) {
+                                if (result.length) {
                                     $("#location_value option:selected").text("Select District");
                                     $.each(result, (i, stateObj) => {
                                         let div_state_data = "<option value=" + stateObj.state_id + " disabled>" + stateObj.state_name + "</option>";
@@ -43,7 +43,7 @@
                                         });
                                     });
                                 } else {
-                                    alert("Unable to fetch data at this time");
+                                    $("#location_value option:selected").text("Unable to fetch data");
                                 }
                             })
                             .fail(function (jqXHR, textStatus, error) { alert("Unable to fetch data at this time | " + textStatus + " | " + error); });

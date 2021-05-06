@@ -16,6 +16,7 @@ const express = require("express")
 app.use(express.static(static_path));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
+let errorHandler = (error) => { console.log("Error encountered: " + error); }
 
 
 // Setting up MongoDB connection
@@ -128,52 +129,53 @@ let checkSlots = async (element) => {
 }
 
 
-
-
 // Handling server side request and response
-app.get("/", (request,response) => {
-    response.sendFile(path.join(static_path, "/index.html"));
+app.get("/", async (request,response) => {
+    await response.sendFile(path.join(static_path, "/index.html"));
 });
 app.get("/district_list", async (request,response) => {
-    let promised_district_data = await cowin.getAllDistricts();
-    response.send(promised_district_data);
+    let promised_district_data = await cowin.getAllDistricts(errorHandler);
+    await response.send(promised_district_data);
 });
-app.post("/action",(request,response) => {
+app.post("/action",async (request,response) => {
     console.log(request.body);
-    /*let mongoClient = new mongoDBConnect();
-    let database = mongoClient.client.db("Users");*/
-    database.collection('users').findOne({email: request.body.email}, (error, result) => {
-        if (error) throw error;
+    await database.collection('users').findOne({email: request.body.email}, (error, result) => {
+        if (error) errorHandler(error);
         if (request.body.subscribe != null) {
             if (result == null) {
-                database.collection("users").insertOne({
-                    email: request.body.email,
-                    frequency: request.body.frequency,
-                    age: request.body.age,
-                    location: request.body.location,
-                    location_value: request.body.location_value,
-                }, (error, result) => {
-                    if (error) throw error;
-                    if (result.insertedCount == 1)
-                        response.send(result.ops[0].email + " successfully subscribed to receive email notification " + request.body.frequency);
-                });
-            } else {
-                if (request.body.frequency == result.frequency)
-                    response.send(request.body.email + " has already subscribed to receive email notification " + request.body.frequency);
-                else {
-                    database.collection("users").updateOne({email: request.body.email}, {$set: {frequency: request.body.frequency}}, (error, result) => {
-                        if (error) throw error;
-                        if(result.modifiedCount == 1)
-                            response.send(request.body.email + " successfully updated email notification frequency to " + request.body.frequency);
+                database.collection("users").insertOne(
+                    {
+                        email: request.body.email,
+                        frequency: request.body.frequency,
+                        age: request.body.age,
+                        location: request.body.location,
+                        location_value: request.body.location_value,
+                    }, (error, result) => {
+                        if (error) errorHandler(error);
+                        if (result.insertedCount == 1)
+                            response.send(result.ops[0].email + " successfully subscribed to receive email notification " + request.body.frequency);
                     });
-                }
+            } else {
+                database.collection("users").updateOne({email: request.body.email},
+                    {
+                        $set: {
+                            frequency: request.body.frequency,
+                            age: request.body.age,
+                            location: request.body.location,
+                            location_value: request.body.location_value,
+                        }
+                    }, (error, result) => {
+                        if (error) errorHandler(error);
+                        if(result.modifiedCount >= 1)
+                            response.send(request.body.email + " already subscribed | Successfully updated email notification preferences");
+                });
             }
         } else if (request.body.unsubscribe != null) {
             if (result == null) {
                 response.send(request.body.email + " is not subscribed to email notification");
             } else {
                 database.collection("users").deleteMany({email: request.body.email}, (error, result) => {
-                    if (error) throw error;
+                    if (error) errorHandler(error);
                     if (result.deletedCount >= 1)
                         response.send(request.body.email + " successfully unsubscribed from email notification");
                 });

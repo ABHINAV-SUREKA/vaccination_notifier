@@ -30,43 +30,53 @@ let slotsCalenderByDistrict = async (element) => {
     return await response.data;
 };
 
-let getStates = async () => {
-    let config = {
-        method: "get",
-        url: "https://cdn-api.co-vin.in/api/v2/admin/location/states",
-        headers: {
-            "accept": "application/json",
-            "Accept-Language": "hi_IN",
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
-        }
-    }
-    let response = await axios(config);
-    return await response.data;
-};
-
-let getAllDistricts = async () => {
-    let promised_state_data = await getStates();
-    let combinedStateDistrictDataList = [];
-    for (i = 0; i < promised_state_data.states.length; i++) {
+let getStates = async (errorHandler) => {
+    let response;
+    try {
         let config = {
             method: "get",
-            url: "https://cdn-api.co-vin.in/api/v2/admin/location/districts/" + promised_state_data.states[i].state_id,
+            url: "https://cdn-api.co-vin.in/api/v2/admin/location/states",
             headers: {
                 "accept": "application/json",
                 "Accept-Language": "hi_IN",
                 "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
             }
         }
-        let response = await axios(config);
-        let combinedStateDistrictData = {
-            state_id: promised_state_data.states[i].state_id,
-            state_name: promised_state_data.states[i].state_name,
-            districts: response.data.districts
-        };
-        await combinedStateDistrictDataList.push(combinedStateDistrictData);
+        response = await axios(config);
+        return await response.data;
+    } catch(error) {
+        errorHandler(error);
     }
-    console.log(combinedStateDistrictDataList);
-    return combinedStateDistrictDataList;
+    return null;
+};
+
+let getAllDistricts = async (errorHandler) => {
+    let combinedStateDistrictDataList = [];
+    try {
+        let promised_state_data = await getStates(errorHandler);
+        for (i = 0; i < promised_state_data.states.length; i++) {
+            let config = {
+                method: "get",
+                url: "https://cdn-api.co-vin.in/api/v2/admin/location/districts/" + promised_state_data.states[i].state_id,
+                headers: {
+                    "accept": "application/json",
+                    "Accept-Language": "hi_IN",
+                    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
+                }
+            }
+            let response = await axios(config);
+            let combinedStateDistrictData = {
+                state_id: promised_state_data.states[i].state_id,
+                state_name: promised_state_data.states[i].state_name,
+                districts: response.data.districts
+            };
+            await combinedStateDistrictDataList.push(combinedStateDistrictData);
+        }
+    } catch(error) {
+        errorHandler(error);
+    } finally {
+        return combinedStateDistrictDataList;
+    }
 };
 
 let getDistrictsByState = async (stateId) => {
