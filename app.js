@@ -42,44 +42,81 @@ cron.schedule("*/1 * * * *", () => {
     database.collection("users").find({}).toArray(function (error, result) {
         if (error) throw error;
         result.forEach(element => {
-            checkSlots(element);
-            if (!element.hasOwnProperty("last_notified_ts") || element.last_notified_ts.toString().length == 0) {
-                emailNotifier(element.email,(error) => {console.log(error);})
-                    .then((promise) => {console.log(promise)}) // .then() and .catch() are redundant here
-                    .catch((error) => {console.log(error)});
-            } else {
-                let timeDiffInMins = Math.abs((Date.now() - element.last_notified_ts)/(1000 * 60));
-                switch (element.frequency) {
-                    case "every hour":
-                        if (60 <= timeDiffInMins)
-                            emailNotifier(element.email,(error) => {console.log(error);})
-                                .then((promise) => {console.log(promise)}) // .then() and .catch() are redundant here
-                                .catch((error) => {console.log(error)});
-                        break;
-                    case "every 3 hours":
-                        if (180 <= timeDiffInMins)
-                            emailNotifier(element.email,(error) => {console.log(error);})
-                                .then((promise) => {console.log(promise)}) // .then() and .catch() are redundant here
-                                .catch((error) => {console.log(error)});
-                        break;
-                    case "every 6 hours":
-                        if (360 <= timeDiffInMins)
-                            emailNotifier(element.email,(error) => {console.log(error);})
-                                .then((promise) => {console.log(promise)}) // .then() and .catch() are redundant here
-                                .catch((error) => {console.log(error)});
-                        break;
-                    case "every 12 hours":
-                        if (720 <= timeDiffInMins)
-                            emailNotifier(element.email,(error) => {console.log(error);})
-                                .then((promise) => {console.log(promise)}) // .then() and .catch() are redundant here
-                                .catch((error) => {console.log(error)});
-                        break;
-                    case "every day":
-                        if (1440 <= timeDiffInMins)
-                            emailNotifier(element.email,(error) => {console.log(error);})
-                                .then((promise) => {console.log(promise)}) // .then() and .catch() are redundant here
-                                .catch((error) => {console.log(error)});
-                        break;
+            if (checkSlots(element)) {
+                if (!element.hasOwnProperty("last_notified_ts") || element.last_notified_ts.toString().length == 0) {
+                    emailNotifier(element.email, (error) => {
+                        console.log(error);
+                    })
+                        .then((promise) => {
+                            console.log(promise)
+                        }) // .then() and .catch() are redundant here
+                        .catch((error) => {
+                            console.log(error)
+                        });
+                } else {
+                    let timeDiffInMins = Math.abs((Date.now() - element.last_notified_ts) / (1000 * 60));
+                    switch (element.frequency) {
+                        case "every hour":
+                            if (60 <= timeDiffInMins)
+                                emailNotifier(element.email, (error) => {
+                                    console.log(error);
+                                })
+                                    .then((promise) => {
+                                        console.log(promise)
+                                    }) // .then() and .catch() are redundant here
+                                    .catch((error) => {
+                                        console.log(error)
+                                    });
+                            break;
+                        case "every 3 hours":
+                            if (180 <= timeDiffInMins)
+                                emailNotifier(element.email, (error) => {
+                                    console.log(error);
+                                })
+                                    .then((promise) => {
+                                        console.log(promise)
+                                    }) // .then() and .catch() are redundant here
+                                    .catch((error) => {
+                                        console.log(error)
+                                    });
+                            break;
+                        case "every 6 hours":
+                            if (360 <= timeDiffInMins)
+                                emailNotifier(element.email, (error) => {
+                                    console.log(error);
+                                })
+                                    .then((promise) => {
+                                        console.log(promise)
+                                    }) // .then() and .catch() are redundant here
+                                    .catch((error) => {
+                                        console.log(error)
+                                    });
+                            break;
+                        case "every 12 hours":
+                            if (720 <= timeDiffInMins)
+                                emailNotifier(element.email, (error) => {
+                                    console.log(error);
+                                })
+                                    .then((promise) => {
+                                        console.log(promise)
+                                    }) // .then() and .catch() are redundant here
+                                    .catch((error) => {
+                                        console.log(error)
+                                    });
+                            break;
+                        case "every day":
+                            if (1440 <= timeDiffInMins)
+                                emailNotifier(element.email, (error) => {
+                                    console.log(error);
+                                })
+                                    .then((promise) => {
+                                        console.log(promise)
+                                    }) // .then() and .catch() are redundant here
+                                    .catch((error) => {
+                                        console.log(error)
+                                    });
+                            break;
+                    }
                 }
             }
         });
@@ -88,20 +125,28 @@ cron.schedule("*/1 * * * *", () => {
 
 // Check slots
 let checkSlots = async (element) => {
+    let centerFilteredData = [];
     if (element.location && element.location == "pincode") {
         let slots_calender_by_pin_data = await slotsCalenderByPin(element);
         let sessionFilteredData = await slots_calender_by_pin_data.centers.map((center) => {
             return {...center, sessions: center.sessions.filter(session => session.min_age_limit <= parseInt(element.age) &&  session.available_capacity > 0)};
         });
-        let centerFilteredData = await sessionFilteredData.filter(center => center.sessions.length > 0);
-        console.log(centerFilteredData);
+        centerFilteredData = await sessionFilteredData.filter(center => center.sessions.length > 0);
+        return await centerFilteredData;
     } else if(element.location && element.location == "district") {
         let slots_calender_by_district_data = await slotsCalenderByDistrict(element);
         let sessionFilteredData = await slots_calender_by_district_data.centers.map((center) => {
             return {...center, sessions: center.sessions.filter(session => session.min_age_limit <= parseInt(element.age) &&  session.available_capacity > 0)};
         });
         let centerFilteredData = await sessionFilteredData.filter(center => center.sessions.length > 0);
-        console.log(centerFilteredData);
+        return await centerFilteredData;
+    } else if(element.location && element.location == "state") {
+        let slots_calender_by_state_data = await slotsCalenderByState(element);
+        let sessionFilteredData = await slots_calender_by_state_data.map((center) => {
+            return {...center, sessions: center.sessions.filter(session => session.min_age_limit <= parseInt(element.age) &&  session.available_capacity > 0)};
+        });
+        let centerFilteredData = await sessionFilteredData.filter(center => center.sessions.length > 0);
+        return await centerFilteredData;
     }
 }
 // Send email notification
@@ -146,13 +191,34 @@ let getStates = async () => {
 };
 
 // Fetch info from Cowin
-let getDistricts = async () => {
-    let promised_state_data = await getStates();
-    let combinedStateDistrictDataList = [];
-    for (i = 0; i < promised_state_data.states.length; i++) {
+let getDistricts = async (stateId) => {
+    if (stateId == undefined) {
+        let promised_state_data = await getStates();
+        let combinedStateDistrictDataList = [];
+        for (i = 0; i < promised_state_data.states.length; i++) {
+            let config = {
+                method: "get",
+                url: "https://cdn-api.co-vin.in/api/v2/admin/location/districts/" + promised_state_data.states[i].state_id,
+                headers: {
+                    "accept": "application/json",
+                    "Accept-Language": "hi_IN",
+                    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
+                }
+            }
+            let response = await axios(config);
+            let combinedStateDistrictData = {
+                state_id: promised_state_data.states[i].state_id,
+                state_name: promised_state_data.states[i].state_name,
+                districts: response.data.districts
+            };
+            await combinedStateDistrictDataList.push(combinedStateDistrictData);
+        }
+        console.log(combinedStateDistrictDataList);
+        return combinedStateDistrictDataList;
+    } else if (stateId != "") {
         let config = {
             method: "get",
-            url: "https://cdn-api.co-vin.in/api/v2/admin/location/districts/" + promised_state_data.states[i].state_id,
+            url: "https://cdn-api.co-vin.in/api/v2/admin/location/districts/" + parseInt(stateId),
             headers: {
                 "accept": "application/json",
                 "Accept-Language": "hi_IN",
@@ -160,15 +226,8 @@ let getDistricts = async () => {
             }
         }
         let response = await axios(config);
-        let combinedStateDistrictData = {
-            state_id: promised_state_data.states[i].state_id,
-            state_name: promised_state_data.states[i].state_name,
-            districts: response.data.districts
-        };
-        await combinedStateDistrictDataList.push(combinedStateDistrictData);
+        return await response.data;
     }
-    console.log(combinedStateDistrictDataList);
-    return combinedStateDistrictDataList;
 };
 
 // Fetch info from Cowin
@@ -199,6 +258,28 @@ let slotsCalenderByDistrict = async (element) => {
     }
     let response = await axios(config);
     return await response.data;
+};
+
+// Fetch info from Cowin
+let slotsCalenderByState = async (element) => {
+    let promised_district_data = await getDistricts(element.location_value);
+    let combinedDistrictDataList = [];
+    console.log(promised_district_data);
+    for (i = 0; i < promised_district_data.districts.length; i++) {
+        let config = {
+            method: "get",
+            url: "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=" + promised_district_data.districts[i].district_id + "&date=" + dateFormat(new Date(), "dd-mm-yyyy"),
+            headers: {
+                "accept": "application/json",
+                "Accept-Language": "hi_IN",
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
+            }
+        }
+        let response = await axios(config);
+        console.log(response.data);
+        await combinedDistrictDataList.push(response.data.centers)
+    }
+    return await combinedDistrictDataList;
 };
 
 // Handling server side request and response
