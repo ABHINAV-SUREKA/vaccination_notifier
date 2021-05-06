@@ -134,12 +134,10 @@ let checkSlots = async (element) => {
 app.get("/", (request,response) => {
     response.sendFile(path.join(static_path, "/index.html"));
 });
-
 app.get("/district_list", async (request,response) => {
     let promised_district_data = await cowin.getAllDistricts();
     response.send(promised_district_data);
 });
-
 app.post("/action",(request,response) => {
     console.log(request.body);
     /*let mongoClient = new mongoDBConnect();
@@ -183,7 +181,6 @@ app.post("/action",(request,response) => {
         }
     });
 });
-
 
 
 
