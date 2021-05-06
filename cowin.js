@@ -86,4 +86,5 @@ let getDistrictsByState = async (stateId) => {
 };
 
 
+
 module.exports = { slotsCalenderByPin, slotsCalenderByDistrict, getAllDistricts, getDistrictsByState };
