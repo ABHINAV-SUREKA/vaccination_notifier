@@ -114,18 +114,44 @@ let emailNotifier = async (toEmail,callback) => {
 
 
 // Fetch info from Cowin
-let getStates = async (callback) => {
+let getStates = async () => {
     let config = {
-        method: 'get',
-        url: 'https://cdn-api.co-vin.in/api/v2/admin/location/states',
+        method: "get",
+        url: "https://cdn-api.co-vin.in/api/v2/admin/location/states",
         headers: {
-            'accept': 'application/json',
-            'Accept-Language': 'hi_IN',
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36'
+            "accept": "application/json",
+            "Accept-Language": "hi_IN",
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
         }
     }
     let response = await axios(config);
     return await response.data;
+};
+
+// Fetch info from Cowin
+let getDistricts = async () => {
+    let promised_state_data = await getStates();
+    let combinedStateDistrictDataList = [];
+    for (i = 0; i < promised_state_data.states.length; i++) {
+        let config = {
+            method: "get",
+            url: "https://cdn-api.co-vin.in/api/v2/admin/location/districts/" + promised_state_data.states[i].state_id,
+            headers: {
+                "accept": "application/json",
+                "Accept-Language": "hi_IN",
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
+            }
+        }
+        let response = await axios(config);
+        let combinedStateDistrictData = {
+            state_id: promised_state_data.states[i].state_id,
+            state_name: promised_state_data.states[i].state_name,
+            districts: response.data.districts
+        };
+        await combinedStateDistrictDataList.push(combinedStateDistrictData);
+    }
+    console.log(combinedStateDistrictDataList);
+    return combinedStateDistrictDataList;
 };
 
 
@@ -134,17 +160,14 @@ app.get("/", (request,response) => {
     response.sendFile(path.join(static_path, "/index.html"));
 });
 
-app.get("/state_list", (request,response) => {
-    let stateList = [];
-    getStates((error) => {console.log(error);})
-        .then(promised_data => {
-            console.log(promised_data.states);
-            for (i = 0; i < promised_data.states.length; i++) {
-                stateList.push(promised_data.states[i].state_name);
-            }
-            response.send(stateList);
-        })
-        .catch((error) => {console.log(error)});
+app.get("/state_list", async (request,response) => {
+    let promised_state_data = await getStates();
+    response.send(promised_state_data);
+});
+
+app.get("/district_list", async (request,response) => {
+    let promised_district_data = await getDistricts();
+    response.send(promised_district_data);
 });
 
 app.post("/action",(request,response) => {
