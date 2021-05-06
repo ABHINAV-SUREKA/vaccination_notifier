@@ -65,7 +65,7 @@
                                     alert("Unable to fetch data at this time");
                                 }
                             })
-                            .fail(function (jqXHR, textStatus, error) { alert("Unable to fetch data at this time | " + error); });
+                            .fail(function (jqXHR, textStatus, error) { alert("Unable to fetch data at this time | " + textStatus + " | " + error); });
                     }
                 } else if ($("#location option:selected").val() == "pincode") {
                     $("#location_value").replaceWith($("<input class=\"form-control\" type=\"number\" name=\"location_value\" id=\"location_value\" placeholder=\"Pincode\">"));
