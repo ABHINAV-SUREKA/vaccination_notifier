@@ -9,19 +9,30 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script type="text/javascript" src="scripts/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="scripts/all-plugins.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js" integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js" integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc" crossorigin="anonymous"></script>
     <script>
         $(function(){
             $("#location").change(function(){
-                $("#location_value").attr("placeholder", $("#location option:selected").text());
-                if ($("#location option:selected").val() == "pincode") {
-                    $("#location_value").attr("type", "number");
-                } else {
-                    $("#location_value").attr("type", "text");
+                //$("#location_value").attr("placeholder", $("#location option:selected").text());
+                if ($("#location option:selected").val() == "state") {
+                    $("#location_value").replaceWith($("<select class=\"form-select col-lg-8\" name=\"location_value\" id=\"location_value\"><option value=\"\" disabled selected>Select State</option></select>"));
+                    $.ajax({
+                        url: "state_list",
+                        type: "get",
+                        success: (result) => {
+                            alert(result);
+                        }
+                    });
+                } else if ($("#location option:selected").val() == "district") {
+                    $("#location_value").replaceWith($("<select class=\"form-select col-lg-8\" name=\"location_value\" id=\"location_value\"><option value=\"\" disabled selected>Select District</option></select>"));
+                } else if ($("#location option:selected").val() == "pincode") {
+                    $("#location_value").replaceWith($("<input class=\"form-control\" type=\"number\" name=\"location_value\" id=\"location_value\" placeholder=\"Pincode\">"));
                 }
             });
         });
+
     </script>
 </head>
 

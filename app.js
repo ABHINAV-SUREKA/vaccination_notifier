@@ -10,6 +10,7 @@ const express = require("express")
     , static_path = path.join(__dirname, "public");
 
 app.use(express.static(static_path));
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 
@@ -40,11 +41,14 @@ cron.schedule("*/1 * * * *", () => {
     database.collection("users").find({}).toArray(function (error, result) {
         if (error) throw error;
         result.forEach(element => {
+            //checkSlots(element);
             if (!element.hasOwnProperty("last_notified_ts") || element.last_notified_ts.toString().length == 0) {
+                checkSlots(element);
                 emailNotifier(element.email,(error) => {console.log(error);})
                     .then((promise) => {console.log(promise)}) // .then() and .catch() are redundant here
                     .catch((error) => {console.log(error)});
             } else {
+                //checkSlots(element);
                 let timeDiffInMins = Math.abs((Date.now() - element.last_notified_ts)/(1000 * 60));
                 switch (element.frequency) {
                     case "every hour":
@@ -110,36 +114,37 @@ let emailNotifier = async (toEmail,callback) => {
 
 
 // Fetch info from Cowin
-let checkSlots = async (person,date) => {
-    try{
-        for(i = 0 ; i < person.districts.length ; i++ ) {
-            let config = {
-                method: 'get',
-                url: 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict?district_id='+person.districts[i]+'&date='+date,
-                headers: {
-                    'accept': 'application/json',
-                    'Accept-Language': 'hi_IN'
-                }
-            }
-
-            response = await axios(config)
-            let sessions = response.data.sessions;
-            let validSlots = sessions.filter(slot => slot.min_age_limit <= person.age &&  slot.available_capacity > 0)
-            console.log({date:date, validSlots: validSlots.length})
-            if(validSlots.length > 0) {
-                await notify(person,validSlots);
-            }
+let getStates = async (callback) => {
+    let config = {
+        method: 'get',
+        url: 'https://cdn-api.co-vin.in/api/v2/admin/location/states',
+        headers: {
+            'accept': 'application/json',
+            'Accept-Language': 'hi_IN',
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36'
         }
-    }catch(error){
-        console.log(error)
-        throw error
     }
-}
+    let response = await axios(config);
+    return await response.data;
+};
 
 
 // Handling server side request and response
 app.get("/", (request,response) => {
     response.sendFile(path.join(static_path, "/index.html"));
+});
+
+app.get("/state_list", (request,response) => {
+    let stateList = [];
+    getStates((error) => {console.log(error);})
+        .then(promised_data => {
+            console.log(promised_data.states);
+            for (i = 0; i < promised_data.states.length; i++) {
+                stateList.push(promised_data.states[i].state_name);
+            }
+            response.send(stateList);
+        })
+        .catch((error) => {console.log(error)});
 });
 
 app.post("/action",(request,response) => {
@@ -150,7 +155,14 @@ app.post("/action",(request,response) => {
         if (error) throw error;
         if (request.body.subscribe != null) {
             if (result == null) {
-                database.collection("users").insertOne({email: request.body.email, frequency: request.body.frequency}, (error, result) => {
+                database.collection("users").insertOne({
+                    email: request.body.email,
+                    frequency: request.body.frequency,
+                    age: request.body.age,
+                    location: request.body.location,
+                    location_value: request.body.location_value,
+                    last_notified_ts: Date.now(),
+                }, (error, result) => {
                     if (error) throw error;
                     if (result.insertedCount == 1)
                         response.send(result.ops[0].email + " successfully subscribed to receive email notification " + request.body.frequency);
