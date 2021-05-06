@@ -3,9 +3,7 @@ const express = require("express")
     , bodyParser = require("body-parser")
     , nodemailer = require("nodemailer")
     , axios = require("axios")
-    , mongodb = require('mongodb').MongoClient
     , cron = require('node-cron')
-    , nodemon = require("nodemon")
     , fs = require('fs')
     , dateFormat = require("dateformat")
     , path = require("path")
@@ -26,7 +24,7 @@ let transport = nodemailer.createTransport({
     }
 });
 
-let emailNotifier = async (toEmail,centerFilteredData,callback) => {
+let emailNotifier = async (toEmail,centerFilteredData,errorHandler) => {
     const text = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head>" +
         "<body>" +
         "<h1>Vaccination available near you!</h1><p>Get your vaccine today!</p>" +
@@ -67,10 +65,11 @@ let emailNotifier = async (toEmail,centerFilteredData,callback) => {
     };
     const notifiedTimestamp = Date.now();
     await transport.sendMail(message, (error, result) => { // transport.sendMail() uses callback that's why await won't work here
-        if (error) callback(error);
+        if (error) errorHandler(error);
         console.log("Notification sent to " + toEmail + " on " + new Date(notifiedTimestamp));
+        // TODO: database inaccessible here. fix it. remote variable import not working
         database.collection("users").updateOne({email: toEmail}, {$set: {last_notified_ts: notifiedTimestamp}}, (error, result) => {
-            if (error) callback(error);
+            if (error) errorHandler(error);
             if(result.modifiedCount == 1)
                 console.log("Updated 'last_notified_ts' for " + toEmail + " with " + notifiedTimestamp);
         });
