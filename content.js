@@ -1,5 +1,4 @@
 let contentFormatter = async(centerFilteredData) => {
-    await console.log(centerFilteredData);
     await console.log(centerFilteredData.length);
     await console.log(centerFilteredData[0].sessions.length);
     let rows = ``;

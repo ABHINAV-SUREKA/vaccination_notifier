@@ -81,15 +81,6 @@ app.get("/district_list", async (request,response) => {
     let promised_district_data = await cowin.getAllDistricts(errorHandler);
     await response.send(promised_district_data);
 });
-app.get("/vaccine_availability", async (request,response) => {
-    await console.log(request);
-    if (request.params.check_availability != null) {
-        let centerFilteredData = await slot.checkSlots(request.params,errorHandler);
-        if (centerFilteredData) {
-            return await content.contentFormatter(centerFilteredData);
-        }
-    }
-});
 app.post("/action",async (request,response) => {
     console.log(request.body);
     if (request.body.subscribe != null) {

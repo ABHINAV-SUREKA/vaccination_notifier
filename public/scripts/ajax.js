@@ -71,6 +71,7 @@ $(function(){
             }).done((result) => {
                 $("#table_container").empty();
                 $("#table_container").removeAttr("hidden");
+                console.log(result);
                 if (result.length) {
                     $("#table_container").append(result);
                 } else {
