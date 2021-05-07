@@ -31,7 +31,7 @@
                         })
                             .done((result) => {
                                 if (result.length) {
-                                    $("#location_value option:selected").text("Select District");
+                                    $("#table_container").text("Select District");
                                     $.each(result, (i, stateObj) => {
                                         let div_state_data = "<option value=" + stateObj.state_id + " disabled>" + stateObj.state_name + "</option>";
                                         $("#location_value").append(div_state_data);
@@ -52,6 +52,12 @@
                     $("#location_value").replaceWith($("<input class=\"form-control\" type=\"number\" name=\"location_value\" id=\"location_value\" placeholder=\"Pincode\" required=\"\" autofocus=\"\">"));
                 }
             });
+            if ($("#location option:selected").val() == "district") {
+                $("#location_value").replaceWith($("<select class=\"form-select col-lg-8\" name=\"location_value\" id=\"location_value\" required=\"\"><option value=\"\" disabled selected>Select District</option></select>"));
+                if (district_data_block) {
+                    $("#location_value").append(district_data_block);
+                }
+            }
             $("#unsubscribe").click(function() {
                 $("#age").removeAttr("required");
                 $("#email").attr("required", true);
@@ -66,13 +72,26 @@
                 $("#age").attr("required", true);
                 $("#email").removeAttr("required");
                 $("#location_value").attr("required", true);
+                $.ajax({
+                    url: "action",
+                    type: "get",
+                    timeout: 20000,
+                    beforeSend: function() {
+                        $("#location_value").append("Fetching results...");
+                    }
+                })
+                    .done((result) => {
+                        $("#location_value").empty();
+                        $("#location_value").removeAttr("hidden");
+                        if (result.length) {
+                            $("#location_value").append(result);
+                        } else {
+                            $("#location_value").append("Unable to fetch data");
+                        }
+                    })
+                    .fail(function (jqXHR, textStatus, error) { alert("Unable to fetch data at this time | " + textStatus + " | " + error); });
             });
-            if ($("#location option:selected").val() == "district") {
-                $("#location_value").replaceWith($("<select class=\"form-select col-lg-8\" name=\"location_value\" id=\"location_value\" required=\"\"><option value=\"\" disabled selected>Select District</option></select>"));
-                if (district_data_block) {
-                    $("#location_value").append(district_data_block);
-                }
-            }
+
         });
     </script>
 </head>
@@ -80,7 +99,7 @@
 <body class="text-center" data-new-gr-c-s-check-loaded="14.1008.0" data-gr-ext-installed="">
 
 <main role="main" class="container">
-    <div class="my-3 p-5 bg-white rounded shadow">
+    <div class="my-3 p-5 bg-white rounded shadow" id="main_container">
         <div class="text-center mb-4 pt-3">
             <h1 class="h3 mb-3 font-weight-normal">Get Vaccine Availability Notification</h1>
         </div>
@@ -126,6 +145,9 @@
                 <input class="btn btn-sm btn-primary" type="submit" name="check_availability" id="check_availability" value="Check Availability">
             </div>
         </form>
+    </div>
+
+    <div class="my-3 p-5 bg-white rounded shadow" id="table_container" hidden>
     </div>
 </main>
 

@@ -80,6 +80,19 @@ app.get("/district_list", async (request,response) => {
     let promised_district_data = await cowin.getAllDistricts(errorHandler);
     await response.send(promised_district_data);
 });
+app.get("/action", async (request,response) => {
+    if (request.body.check_availability != null) {
+        // todo:
+        let result = await db.findOneDoc({email: request.body.email}, errorHandler);
+        if (result == null) {
+            response.send(request.body.email + " is not subscribed to email notification");
+        } else {
+            result = await db.deleteManyDoc({email: request.body.email}, errorHandler);
+            if (result.deletedCount >= 1)
+                response.send(request.body.email + " successfully unsubscribed from email notification");
+        }
+    }
+});
 app.post("/action",async (request,response) => {
     console.log(request.body);
     if (request.body.subscribe != null) {
@@ -106,15 +119,6 @@ app.post("/action",async (request,response) => {
                     response.send(request.body.email + " already subscribed | Successfully updated email notification preferences");
         }
     } else if (request.body.unsubscribe != null) {
-        let result = await db.findOneDoc({email: request.body.email}, errorHandler);
-        if (result == null) {
-            response.send(request.body.email + " is not subscribed to email notification");
-        } else {
-            result = await db.deleteManyDoc({email: request.body.email}, errorHandler);
-            if (result.deletedCount >= 1)
-                response.send(request.body.email + " successfully unsubscribed from email notification");
-        }
-    } else if (request.body.check_availability != null) {
         let result = await db.findOneDoc({email: request.body.email}, errorHandler);
         if (result == null) {
             response.send(request.body.email + " is not subscribed to email notification");
