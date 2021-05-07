@@ -22,7 +22,6 @@ let contentFormatter = async(centerFilteredData) => {
                 <td>` + centerFilteredData[i].address + `</td>
                 <td>` + centerFilteredData[i].district_name + `</td>
                 <td>` + centerFilteredData[i].pincode + `</td>
-                <td>` + centerFilteredData[i].fee_type + `</td>
                 <td>
                     <table class="table">
                         <thead class="thead-dark">
@@ -61,7 +60,6 @@ let contentFormatter = async(centerFilteredData) => {
                             <th scope="col">Address</th>
                             <th scope="col">District</th>
                             <th scope="col">Pincode</th>
-                            <th scope="col">Fees</th>
                             <th scope="col">Sessions</th>
                         </tr>
                     </thead>
