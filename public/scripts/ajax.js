@@ -17,11 +17,10 @@ $(function(){
                     "            </div>";
                 $("#alert_placeholder").append(alert_data);
             }
-        });
+        }).fail(function (jqXHR, textStatus, error) { alert("Unable to fetch data at this time | " + textStatus + " | " + error); });;
     });
     $("input#unsubscribe").click((event) => {
         event.preventDefault();
-        console.log("unsubscribe");
         var data = $("form#preferences").serialize()+"&unsubscribe=Unsubscribe";
         $.ajax({
             url: "action",
@@ -37,7 +36,29 @@ $(function(){
                     "            </div>";
                 $("#alert_placeholder").append(alert_data);
             }
-        });
+        }).fail(function (jqXHR, textStatus, error) { alert("Unable to fetch data at this time | " + textStatus + " | " + error); });
+    });
+    $("input#check_availability").click((event) => {
+        event.preventDefault();
+        var data = $("form#preferences").serialize()+"&check_availability=Check Availability";
+        $.ajax({
+            url: "action",
+            type: "post",
+            data: data,
+            timeout: 25000,
+            beforeSend: function() {
+                $("#location_value").removeAttr("hidden");
+                $("#location_value").append("Fetching results...");
+            }
+        }).done((result) => {
+            $("#location_value").empty();
+            $("#location_value").removeAttr("hidden");
+            if (result.length) {
+                $("#location_value").append(result);
+            } else {
+                $("#location_value").append("Unable to fetch data");
+            }
+        }).fail(function (jqXHR, textStatus, error) { alert("Unable to fetch data at this time | " + textStatus + " | " + error); });
     });
     $("#location").change(function() {
         if ($("#location option:selected").val() == "district") {
@@ -96,31 +117,5 @@ $(function(){
         $("#age").attr("required", true);
         $("#email").removeAttr("required");
         $("#location_value").attr("required", true);
-        //});
-        //$("#check_availability").click(function() {
-        if ($("#age").val().length != 0 && $("#location_value").val().length != 0)
-        {
-            $.ajax({
-                url: "vaccine_availability",
-                type: "get",
-                timeout: 25000,
-                beforeSend: function() {
-                    $("#location_value").removeAttr("hidden");
-                    $("#location_value").append("Fetching results...");
-                }
-            })
-                .done((result) => {
-                    $("#location_value").empty();
-                    $("#location_value").removeAttr("hidden");
-                    if (result.length) {
-                        $("#location_value").append(result);
-                    } else {
-                        $("#location_value").append("Unable to fetch data");
-                    }
-                })
-                .fail(function (jqXHR, textStatus, error) { alert("Unable to fetch data at this time | " + textStatus + " | " + error); });
-        }
-        //});
     });
-
 });
