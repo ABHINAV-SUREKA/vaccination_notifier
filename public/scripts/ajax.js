@@ -40,25 +40,27 @@ $(function(){
     });
     $("input#check_availability").click((event) => {
         event.preventDefault();
-        var data = $("form#preferences").serialize()+"&check_availability=Check Availability";
-        $.ajax({
-            url: "action",
-            type: "post",
-            data: data,
-            timeout: 25000,
-            beforeSend: function() {
-                $("#location_value").removeAttr("hidden");
-                $("#location_value").append("Fetching results...");
-            }
-        }).done((result) => {
-            $("#location_value").empty();
-            $("#location_value").removeAttr("hidden");
-            if (result.length) {
-                $("#location_value").append(result);
-            } else {
-                $("#location_value").append("Unable to fetch data");
-            }
-        }).fail(function (jqXHR, textStatus, error) { alert("Unable to fetch data at this time | " + textStatus + " | " + error); });
+        if ($("#age").val().length != 0 && $("#location_value").val().length != 0) {
+            var data = $("form#preferences").serialize()+"&check_availability=Check Availability";
+            $.ajax({
+                url: "action",
+                type: "post",
+                data: data,
+                timeout: 25000,
+                beforeSend: function() {
+                    $("#table_container").removeAttr("hidden");
+                    $("#table_container").append("Fetching results...");
+                }
+            }).done((result) => {
+                $("#table_container").empty();
+                $("#table_container").removeAttr("hidden");
+                if (result.length) {
+                    $("#table_container").append(result);
+                } else {
+                    $("#table_container").append("Unable to fetch data");
+                }
+            }).fail(function (jqXHR, textStatus, error) { alert("Unable to fetch data at this time | " + textStatus + " | " + error); });
+        }
     });
     $("#location").change(function() {
         if ($("#location option:selected").val() == "district") {
