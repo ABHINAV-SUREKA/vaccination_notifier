@@ -1,7 +1,8 @@
 const nodemailer = require("nodemailer")
     , fs = require('fs')
     , dateFormat = require("dateformat")
-    , db = require( './db' );
+    , db = require( './db' )
+    , content = require('./content');
 
 
 // Setting up SMTP transport connection
@@ -15,64 +16,11 @@ let transport = nodemailer.createTransport({
 });
 
 let emailNotifier = async (toEmail,centerFilteredData,errorHandler) => {
-    await console.log(centerFilteredData);
+    let html = await content.contentFormatter(centerFilteredData);
     const text = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head>" +
         "<body>" +
         "<h1>Vaccination available near you!</h1><p>Get your vaccine today!</p>" +
         "</body></html>";
-
-    let rows = ``;
-    for (i = 0; i < centerFilteredData.length; i++) {
-        let subrows = ``;
-        for (j = 0; j < centerFilteredData.sessions.length; j++) {
-            let subrow = `
-            <tr>
-                <th scope="row">` + (j+1) + `</th>
-                <td>` + centerFilteredData.sessions[j].date + `</td>
-                <td>` + centerFilteredData.sessions[j].available_capacity + `</td>
-                <td>` + centerFilteredData.sessions[j].min_age_limit + `</td>
-                <td>` + centerFilteredData.sessions[j].vaccine + `</td>
-            </tr>`;
-            subrows = subrows + subrow;
-        }
-        let row = `
-        <tr>
-            <th scope="row">` + (i + 1) + `</th>
-            <td>` + centerFilteredData[i].name + `</td>
-            <td>` + centerFilteredData[i].address + `</td>
-            <td>` + centerFilteredData[i].district_name + `</td>
-            <td>` + centerFilteredData[i].pincode + `</td>
-            <td>` + centerFilteredData[i].fee_type + `</td>
-            <td>
-                <table class="table">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Available</th>
-                            <th scope="col">Min Age</th>
-                            <th scope="col">Vaccine</th>
-                        </tr>
-                    </thead>
-                    <tbody>` + subrows + `</tbody>
-                </table>
-            </td>
-        </tr>`;
-        rows = rows + row;
-    };
-    let html = `
-          <html>
-            <head><title>Test-email</title></head><body>
-            <h3> Available Slots </h3>
-            <table id="tests">
-                <tr>
-                    <th>Center-Name</th>
-                    <th>District</th>
-                    <th>Pincode</th>
-                    <th>Vaccine</th>
-                    <th>Fees</th>
-                </tr>` + rows +
-        `</table></body></html>`;
     const message = {
         from: "no-reply@vaccination.notifier.com",
         to: toEmail,
