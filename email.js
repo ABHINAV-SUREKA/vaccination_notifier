@@ -31,6 +31,10 @@ let emailNotifier = async (toEmail,centerFilteredData,errorHandler) => {
                       <td>`+centerFilteredData[i].fee_type+`</td>
                     </tr>
                      `;
+        /*<th scope="row">1</th>
+        <td>Mark</td>
+        <td>Otto</td>
+        <td>@mdo</td>*/
         rows = rows + row;
     }
     let html = `
@@ -43,7 +47,7 @@ let emailNotifier = async (toEmail,centerFilteredData,errorHandler) => {
                     <th>District</th>
                     <th>Pincode</th>
                     <th>Vaccine</th>
-                    <th>Fee</th>
+                    <th>Fees</th>
                 </tr>` + rows +
         `</table></body></html>`;
     const message = {
