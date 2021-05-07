@@ -118,7 +118,7 @@ app.post("/action",async (request,response) => {
     } else if (request.body.check_availability != null) {
         let centerFilteredData = await slot.checkSlots(request.body,errorHandler);
         if (centerFilteredData) {
-            return await content.contentFormatter(centerFilteredData);
+            response.send(await content.contentFormatter(centerFilteredData));
         }
     }
 });
