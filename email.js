@@ -22,21 +22,44 @@ let emailNotifier = async (toEmail,centerFilteredData,errorHandler) => {
         "</body></html>";
 
     let rows = ``;
-    for (i=0;i<centerFilteredData.length;i++){
-        let row = `<tr>
-                      <td>`+centerFilteredData[i].name+`</td>
-                      <td>`+centerFilteredData[i].district_name+`</td>
-                      <td>`+centerFilteredData[i].pincode+`</td>
-                      <td>`+centerFilteredData[i].sessions+`</td>
-                      <td>`+centerFilteredData[i].fee_type+`</td>
-                    </tr>
-                     `;
-        /*<th scope="row">1</th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>*/
+    for (i = 0; i < centerFilteredData.length; i++) {
+        let subrows = ``;
+        for (j = 0; j < centerFilteredData.sessions.length; j++) {
+            let subrow = `
+            <tr>
+                <th scope="row">` + (j+1) + `</th>
+                <td>` + centerFilteredData.sessions[j].date + `</td>
+                <td>` + centerFilteredData.sessions[j].available_capacity + `</td>
+                <td>` + centerFilteredData.sessions[j].min_age_limit + `</td>
+                <td>` + centerFilteredData.sessions[j].vaccine + `</td>
+            </tr>`;
+            subrows = subrows + subrow;
+        }
+        let row = `
+        <tr>
+            <th scope="row">` + (i + 1) + `</th>
+            <td>` + centerFilteredData[i].name + `</td>
+            <td>` + centerFilteredData[i].address + `</td>
+            <td>` + centerFilteredData[i].district_name + `</td>
+            <td>` + centerFilteredData[i].pincode + `</td>
+            <td>` + centerFilteredData[i].fee_type + `</td>
+            <td>
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Available</th>
+                            <th scope="col">Min Age</th>
+                            <th scope="col">Vaccine</th>
+                        </tr>
+                    </thead>
+                    <tbody>` + subrows + `</tbody>
+                </table>
+            </td>
+        </tr>`;
         rows = rows + row;
-    }
+    };
     let html = `
           <html>
             <head><title>Test-email</title></head><body>
