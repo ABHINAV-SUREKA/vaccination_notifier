@@ -12,7 +12,8 @@ const express = require("express")
     , cowin = require("./cowin")
     , email = require("./email")
     , slot = require("./slot")
-    , db = require( './db' );
+    , db = require( './db' )
+    , content = require('./content');
 
 app.use(express.static(static_path));
 app.use(bodyParser.json());
@@ -80,16 +81,12 @@ app.get("/district_list", async (request,response) => {
     let promised_district_data = await cowin.getAllDistricts(errorHandler);
     await response.send(promised_district_data);
 });
-app.get("/action", async (request,response) => {
-    if (request.body.check_availability != null) {
-        // todo:
-        let result = await db.findOneDoc({email: request.body.email}, errorHandler);
-        if (result == null) {
-            response.send(request.body.email + " is not subscribed to email notification");
-        } else {
-            result = await db.deleteManyDoc({email: request.body.email}, errorHandler);
-            if (result.deletedCount >= 1)
-                response.send(request.body.email + " successfully unsubscribed from email notification");
+app.get("/vaccine_availability", async (request,response) => {
+    await console.log(request);
+    if (request.params.check_availability != null) {
+        let centerFilteredData = await slot.checkSlots(request.params,errorHandler);
+        if (centerFilteredData) {
+            return await content.contentFormatter(centerFilteredData);
         }
     }
 });
@@ -121,11 +118,11 @@ app.post("/action",async (request,response) => {
     } else if (request.body.unsubscribe != null) {
         let result = await db.findOneDoc({email: request.body.email}, errorHandler);
         if (result == null) {
-            response.send(request.body.email + " is not subscribed to email notification");
+            await response.send(request.body.email + " is not subscribed to email notification");
         } else {
             result = await db.deleteManyDoc({email: request.body.email}, errorHandler);
             if (result.deletedCount >= 1)
-                response.send(request.body.email + " successfully unsubscribed from email notification");
+                await response.send(request.body.email + " successfully unsubscribed from email notification");
         }
     }
 });
