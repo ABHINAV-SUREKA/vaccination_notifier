@@ -1,21 +1,5 @@
-const express = require("express")
-    , app = express()
-    , bodyParser = require("body-parser")
-    , nodemailer = require("nodemailer")
-    , axios = require("axios")
-    , mongodb = require('mongodb').MongoClient
-    , cron = require('node-cron')
-    , nodemon = require("nodemon")
-    , fs = require('fs')
-    , dateFormat = require("dateformat")
-    , path = require("path")
-    , static_path = path.join(__dirname, "public")
-    , cowin = require("./cowin")
-    , email = require("./email");
+const cowin = require("./cowin");
 
-app.use(express.static(static_path));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
 
 let checkSlots = async (element,errorHandler) => {
     let centerFilteredData = [];
@@ -39,7 +23,6 @@ let checkSlots = async (element,errorHandler) => {
         return centerFilteredData;
     }
 }
-
 
 
 module.exports = { checkSlots };

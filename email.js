@@ -1,18 +1,7 @@
-const express = require("express")
-    , app = express()
-    , bodyParser = require("body-parser")
-    , nodemailer = require("nodemailer")
-    , axios = require("axios")
-    , cron = require('node-cron')
+const nodemailer = require("nodemailer")
     , fs = require('fs')
-    , dateFormat = require("dateformat")
-    , path = require("path")
-    , static_path = path.join(__dirname, "public")
-    , cowin = require("./cowin");
+    , dateFormat = require("dateformat");
 
-app.use(express.static(static_path));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
 
 // Setting up SMTP transport connection
 let transport = nodemailer.createTransport({

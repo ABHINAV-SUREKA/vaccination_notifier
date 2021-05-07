@@ -1,6 +1,7 @@
 const axios = require("axios")
     , dateFormat = require("dateformat");
 
+
 // Fetch info from Cowin
 let slotsCalenderByPin = async (element) => {
     let config = {

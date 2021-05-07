@@ -2,8 +2,9 @@ const MongoClient = require("mongodb").MongoClient;
 const url = "mongodb://localhost:27017";
 const dbName = "Users";
 const collectionName = "users";
-
 var database;
+
+
 let dbConnect = async (errorHandler) => {
     let client = new MongoClient(url);
     try {
@@ -13,10 +14,6 @@ let dbConnect = async (errorHandler) => {
         errorHandler(error);
     }
 }
-
-let getDatabase = async () => {
-    return await database;
-};
 
 let findOneDoc = async (findCondition,errorHandler) => {
     try {
@@ -59,4 +56,4 @@ let deleteManyDoc = async (findCondition,errorHandler) => {
 }
 
 
-module.exports = { dbConnect, getDatabase, findOneDoc, findAllDoc, insertOneDoc, updateOneDoc, deleteManyDoc };
+module.exports = { dbConnect, findOneDoc, findAllDoc, insertOneDoc, updateOneDoc, deleteManyDoc };
