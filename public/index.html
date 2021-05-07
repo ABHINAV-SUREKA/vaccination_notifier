@@ -73,9 +73,9 @@
 <body class="text-center" data-new-gr-c-s-check-loaded="14.1008.0" data-gr-ext-installed="">
 
 <main role="main" class="container">
-    <div class="my-3 p-5 bg-white rounded shadow-sm">
-        <div class="text-center mb-4">
-            <h1 class="h3 mb-3 font-weight-normal">Vaccine Availability Notifier</h1>
+    <div class="my-3 p-5 bg-white rounded shadow">
+        <div class="text-center mb-4 pt-3">
+            <h1 class="h3 mb-3 font-weight-normal">Get Vaccine Availability Notification</h1>
         </div>
         <form action="/action" method="POST">
             <p>Subscribe to receive
@@ -85,9 +85,9 @@
                     <option value="every 12 hours">Every 12 hours</option>
                     <option value="every day" selected>Daily</option>
                 </select>
-                email notifications about vaccination availability near you
+                email notifications about vaccine availability near you
             </p>
-            <div class="form-row">
+            <div class="form-row pt-3">
                 <div class="form-group col-sm-5">
                     <label class="sr-only" for="email">Email</label>
                     <input class="form-control" type="email" name="email" id="email" placeholder="Email address" required="" autofocus="">
@@ -107,31 +107,17 @@
                     </div>
                 </div>
             </div>
-            <input class="btn btn-sm btn-primary" type="submit" name="subscribe" id="subscribe" value="Subscribe">
-            <input class="btn btn-sm btn-secondary" type="submit" name="unsubscribe" id="unsubscribe" value="Unsubscribe">
-        </form>
-    </div>
-
-    <div class="my-3 p-5 bg-white rounded shadow-sm">
-        <div class="text-center mb-4">
-            <h1 class="h3 mb-3 font-weight-normal">Check Vaccine Availability</h1>
-            <p>Check vaccination details near you</p>
-        </div>
-        <form action="/check_location" method="GET">
-            <div class="form-group">
-                <label class="sr-only" for="location">Select location:</label>
-                <select id="location" name="location">
-                    <option value="pincode">Pincode</option>
-                    <option value="district">District</option>
-                    <option value="state">State</option>
-                </select>
+            <div class="form-group pb-5 pt-3">
+                <input class="btn btn-md btn-primary" type="submit" name="subscribe" id="subscribe" value="Subscribe">
+                <input class="btn btn-md btn-secondary" type="submit" name="unsubscribe" id="unsubscribe" value="Unsubscribe">
+            </div>
+            <hr class="my-4">
+            <div class="text-center mb-4 pt-4">
+                <h4 class="h4 mb-3 font-weight-normal">Check Vaccine Availability Details Here</h4>
             </div>
             <div class="form-group">
-                <label class="sr-only" for="location_value" id="location_value_label">Pincode: </label>
-                <input class="form-control" name="location_value" id="location_value" placeholder="Pincode">
+                <input class="btn btn-sm btn-primary" type="submit" name="check_availability" value="Check availability">
             </div>
-            <input class="btn btn-sm btn-primary" type="submit" name="check_availability" value="Check availability">
-
         </form>
     </div>
 </main>
