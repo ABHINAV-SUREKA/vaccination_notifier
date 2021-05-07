@@ -11,7 +11,7 @@ $(function(){
         }).done((result) => {
             console.log(result);
             if (result.length) {
-                var alert_data = "<div class=\"alert alert-warning alert-dismissible fade show\" role=\"alert\">" +
+                var alert_data = "<div class=\"alert alert-success alert-dismissible fade show\" role=\"alert\">" +
                     "                <strong>" + result + "</strong>" +
                     "                <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>" +
                     "            </div>";
