@@ -53,12 +53,19 @@
                 }
             });
             $("#unsubscribe").click(function() {
-                $('#age').removeAttr('required');
-                $('#location_value').removeAttr('required');
+                $("#age").removeAttr("required");
+                $("#email").attr("required", true);
+                $("#location_value").removeAttr("required");
             });
             $("#subscribe").click(function() {
-                $('#age').attr("required", true);
-                $('#location_value').attr("required", true);
+                $("#age").attr("required", true);
+                $("#email").attr("required", true);
+                $("#location_value").attr("required", true);
+            });
+            $("#check_availability").click(function() {
+                $("#age").attr("required", true);
+                $("#email").removeAttr("required");
+                $("#location_value").attr("required", true);
             });
             if ($("#location option:selected").val() == "district") {
                 $("#location_value").replaceWith($("<select class=\"form-select col-lg-8\" name=\"location_value\" id=\"location_value\" required=\"\"><option value=\"\" disabled selected>Select District</option></select>"));
@@ -90,11 +97,11 @@
             <div class="form-row pt-3">
                 <div class="form-group col-sm-5">
                     <label class="sr-only" for="email">Email</label>
-                    <input class="form-control" type="email" name="email" id="email" placeholder="Email address" required="" autofocus="">
+                    <input class="form-control" type="email" name="email" id="email" placeholder="Email address" autofocus="">
                 </div>
                 <div class="form-group col-sm-2">
                     <label class="sr-only" for="">Age</label>
-                    <input class="form-control" type="number" name="age" id="age" placeholder="Age" required="" autofocus="">
+                    <input class="form-control" type="number" name="age" id="age" placeholder="Age" autofocus="">
                 </div>
                 <div class="form-group col-md-5">
                     <div class="input-group">
@@ -103,7 +110,7 @@
                             <option value="district">District</option>
                         </select>
                         <label class="sr-only" for="location_value" id="location_value_label">Pincode: </label>
-                        <input class="form-control" type="number" name="location_value" id="location_value" placeholder="Pincode" required="" autofocus="">
+                        <input class="form-control" type="number" name="location_value" id="location_value" placeholder="Pincode" autofocus="">
                     </div>
                 </div>
             </div>
@@ -116,7 +123,7 @@
                 <h4 class="h4 mb-3 font-weight-normal">Check Vaccine Availability Details Here</h4>
             </div>
             <div class="form-group">
-                <input class="btn btn-sm btn-primary" type="submit" name="check_availability" value="Check availability">
+                <input class="btn btn-sm btn-primary" type="submit" name="check_availability" id="check_availability" value="Check Availability">
             </div>
         </form>
     </div>
