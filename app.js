@@ -28,7 +28,6 @@ cron.schedule("*/1 * * * *", async () => {
     for (const element of results) {
         if (!element.hasOwnProperty("last_notified_ts") || element.last_notified_ts.toString().length == 0) {
             let centerFilteredData = await slot.checkSlots(element,errorHandler);
-            await console.log(centerFilteredData);
             if (centerFilteredData) {
                 await email.emailNotifier(element.email,centerFilteredData,errorHandler);
             }
@@ -91,7 +90,7 @@ app.post("/action",async (request,response) => {
                 frequency: request.body.frequency,
                 age: request.body.age,
                 location: request.body.location,
-                location_value: request.body.location_value
+                location_value: request.body.location_value,
             }, errorHandler);
             if (result.insertedCount == 1)
                 await response.send(result.ops[0].email + " successfully subscribed to receive email notification " + request.body.frequency);

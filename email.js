@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer")
     , fs = require('fs')
-    , dateFormat = require("dateformat");
+    , dateFormat = require("dateformat")
+    , db = require( './db' );
 
 
 // Setting up SMTP transport connection
@@ -14,11 +15,12 @@ let transport = nodemailer.createTransport({
 });
 
 let emailNotifier = async (toEmail,centerFilteredData,errorHandler) => {
+    await console.log(centerFilteredData);
     const text = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head>" +
         "<body>" +
         "<h1>Vaccination available near you!</h1><p>Get your vaccine today!</p>" +
         "</body></html>";
-    console.log(centerFilteredData);
+
     let rows = ``;
     for (i=0;i<centerFilteredData.length;i++){
         let row = `<tr>
@@ -42,9 +44,8 @@ let emailNotifier = async (toEmail,centerFilteredData,errorHandler) => {
                     <th>Pincode</th>
                     <th>Vaccine</th>
                     <th>Fee</th>
-                </tr>
-                 `+rows+`
-            </table></body></html>`;
+                </tr>` + rows +
+        `</table></body></html>`;
     const message = {
         from: "no-reply@vaccination.notifier.com",
         to: toEmail,
@@ -52,20 +53,20 @@ let emailNotifier = async (toEmail,centerFilteredData,errorHandler) => {
         text: text,
         html: html,
     };
-    const notifiedTimestamp = Date.now();
-    await transport.sendMail(message, (error, result) => { // transport.sendMail() uses callback that's why await won't work here
+    const notifiedTimestamp = await Date.now();
+    await transport.sendMail(message, async (error, info) => { // transport.sendMail() uses callback that's why await won't work here
         if (error) errorHandler(error);
         console.log("Notification sent to " + toEmail + " on " + new Date(notifiedTimestamp));
-        // TODO: database inaccessible here. fix it. remote variable import not working
-        database.collection("users").updateOne({email: toEmail}, {$set: {last_notified_ts: notifiedTimestamp}}, (error, result) => {
-            if (error) errorHandler(error);
-            if(result.modifiedCount == 1)
-                console.log("Updated 'last_notified_ts' for " + toEmail + " with " + notifiedTimestamp);
+        let result = await db.updateOneDoc({email: toEmail},{
+            $set: {
+                last_notified_ts: notifiedTimestamp,
+            }}, errorHandler);
+        if (error) errorHandler(error);
+        if(result.modifiedCount == 1)
+            await console.log("Updated 'last_notified_ts' for " + toEmail + " with " + notifiedTimestamp);
         });
-    });
     return "sending mail...";
 }
-
 
 
 module.exports = { emailNotifier };
