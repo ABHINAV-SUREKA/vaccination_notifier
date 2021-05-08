@@ -51,16 +51,16 @@ let contentFormatter = async(centerFilteredData) => {
             <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">           
         </head>
         <body class="text-center" data-new-gr-c-s-check-loaded="14.1008.0" data-gr-ext-installed="">
-            <div class="table-responsive-md">
-                <table class="table table-striped">
+            <div class="table-responsive-lg">
+                <table class="table table-sm table-striped table-hover">
                     <thead class="thead-dark">
                         <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Center Name</th>
-                            <th scope="col">Address</th>
-                            <th scope="col">District</th>
-                            <th scope="col">Pincode</th>
-                            <th scope="col">Sessions</th>
+                            <th scope="col" style="width:3%">#</th>
+                            <th scope="col" style="width:14%">Center Name</th>
+                            <th scope="col" style="width:18%">Address</th>
+                            <th scope="col" style="width:8%">District</th>
+                            <th scope="col" style="width:10%">Pincode</th>
+                            <th scope="col" style="width:67%">Sessions</th>
                         </tr>
                     </thead>
                     <tbody>` + rows + `</tbody>
