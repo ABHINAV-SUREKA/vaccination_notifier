@@ -24,53 +24,57 @@ let errorHandler = (error) => { console.log("Error encountered: " + error); }
 // Send periodic emails to subscribers
 cron.schedule("*/1 * * * *", async () => {
     console.log("cron running");
-    const cursor = await db.findAllDoc(errorHandler);
-    const results = await cursor.toArray();
-    for (const element of results) {
-        if (!element.hasOwnProperty("last_notified_ts") || element.last_notified_ts.toString().length == 0) {
-            let centerFilteredData = await slot.checkSlots(element,errorHandler);
-            if (centerFilteredData.numRecords > 0) {
-                await email.emailNotifier(element.email, centerFilteredData.html, errorHandler);
-            }
-        } else {
-            let timeDiffInMins = await Math.abs((Date.now() - element.last_notified_ts) / (1000 * 60));
-            switch (element.frequency) {
-                case "every hour":
-                    if (60 <= timeDiffInMins) {
-                        let centerFilteredData = await slot.checkSlots(element, errorHandler);
-                        if (centerFilteredData.numRecords > 0) {
-                            await email.emailNotifier(element.email, centerFilteredData.html, errorHandler);
+    if (undefined == await db.getDb(errorHandler)) {
+        console.log("Failed to connect to MongoDB!");
+    } else {
+        const cursor = await db.findAllDoc(errorHandler);
+        const results = await cursor.toArray();
+        for (const element of results) {
+            if (!element.hasOwnProperty("last_notified_ts") || element.last_notified_ts.toString().length == 0) {
+                let centerFilteredData = await slot.checkSlots(element, errorHandler);
+                if (centerFilteredData.numRecords > 0) {
+                    await email.emailNotifier(element.email, centerFilteredData.html, errorHandler);
+                }
+            } else {
+                let timeDiffInMins = await Math.abs((Date.now() - element.last_notified_ts) / (1000 * 60));
+                switch (element.frequency) {
+                    case "every hour":
+                        if (60 <= timeDiffInMins) {
+                            let centerFilteredData = await slot.checkSlots(element, errorHandler);
+                            if (centerFilteredData.numRecords > 0) {
+                                await email.emailNotifier(element.email, centerFilteredData.html, errorHandler);
+                            }
                         }
-                    }
-                    break;
-                case "every 6 hours":
-                    if (360 <= timeDiffInMins) {
-                        let centerFilteredData = await slot.checkSlots(element, errorHandler);
-                        if (centerFilteredData.numRecords > 0) {
-                            await email.emailNotifier(element.email, centerFilteredData.html, errorHandler);
+                        break;
+                    case "every 6 hours":
+                        if (360 <= timeDiffInMins) {
+                            let centerFilteredData = await slot.checkSlots(element, errorHandler);
+                            if (centerFilteredData.numRecords > 0) {
+                                await email.emailNotifier(element.email, centerFilteredData.html, errorHandler);
+                            }
                         }
-                    }
-                    break;
-                case "every 12 hours":
-                    if (720 <= timeDiffInMins) {
-                        let centerFilteredData = await slot.checkSlots(element, errorHandler);
-                        if (centerFilteredData.numRecords > 0) {
-                            await email.emailNotifier(element.email, centerFilteredData.html, errorHandler);
+                        break;
+                    case "every 12 hours":
+                        if (720 <= timeDiffInMins) {
+                            let centerFilteredData = await slot.checkSlots(element, errorHandler);
+                            if (centerFilteredData.numRecords > 0) {
+                                await email.emailNotifier(element.email, centerFilteredData.html, errorHandler);
+                            }
                         }
-                    }
-                    break;
-                case "every day":
-                    if (1440 <= timeDiffInMins) {
-                        let centerFilteredData = await slot.checkSlots(element, errorHandler);
-                        if (centerFilteredData.numRecords > 0) {
-                            await email.emailNotifier(element.email, centerFilteredData.html, errorHandler);
+                        break;
+                    case "every day":
+                        if (1440 <= timeDiffInMins) {
+                            let centerFilteredData = await slot.checkSlots(element, errorHandler);
+                            if (centerFilteredData.numRecords > 0) {
+                                await email.emailNotifier(element.email, centerFilteredData.html, errorHandler);
+                            }
                         }
-                    }
-                    break;
+                        break;
+                }
             }
         }
     }
-})
+});
 
 
 // Handling server side requests and responses
@@ -83,56 +87,61 @@ app.get("/district_list", async (request,response) => {
 });
 app.post("/action",async (request,response) => {
     console.log(request.body);
-    if (request.body.subscribe != null) {
-        let result = await db.findOneDoc({email: request.body.email}, errorHandler);
-        if (!result) {
-            result = await db.insertOneDoc({
-                email: request.body.email,
-                frequency: request.body.frequency,
-                age: request.body.age,
-                location: request.body.location,
-                location_value: request.body.location_value,
-            }, errorHandler);
-            if (result.insertedCount >= 1)
-                await response.send(result.ops[0].email + " subscribed to receive email notification " + request.body.frequency + "!");
-            else
-                await response.send("");
-        } else if(result.hasOwnProperty("_id")) {
-            result = await db.updateOneDoc({email: request.body.email}, {
-                $set: {
+    if (undefined == await db.getDb(errorHandler)) {
+        await response.send("");
+    } else {
+        if (request.body.subscribe != null) {
+            let result = await db.findOneDoc({email: request.body.email}, errorHandler);
+            if (!result) {
+                result = await db.insertOneDoc({
+                    email: request.body.email,
                     frequency: request.body.frequency,
                     age: request.body.age,
                     location: request.body.location,
                     location_value: request.body.location_value,
-                }}, errorHandler);
-            if(result.modifiedCount > 0)
-                await response.send("Updated notification preferences for " + request.body.email + "! | User already subscribed");
-            else if(result.modifiedCount == 0 && result.matchedCount > 0)
-                await response.send("User already subscribed");
+                }, errorHandler);
+                if (result.insertedCount >= 1)
+                    await response.send(result.ops[0].email + " subscribed to receive email notification " + request.body.frequency + "!");
+                else
+                    await response.send("");
+            } else if (result.hasOwnProperty("_id")) {
+                result = await db.updateOneDoc({email: request.body.email}, {
+                    $set: {
+                        frequency: request.body.frequency,
+                        age: request.body.age,
+                        location: request.body.location,
+                        location_value: request.body.location_value,
+                    }
+                }, errorHandler);
+                if (result.modifiedCount > 0)
+                    await response.send("Updated notification preferences for " + request.body.email + " | User already subscribed!");
+                else if (result.modifiedCount == 0 && result.matchedCount > 0)
+                    await response.send("User already subscribed");
+                else
+                    await response.send("");
+            } else
+                await response.send("");
+        } else if (request.body.unsubscribe != null) {
+            let result = await db.findOneDoc({email: request.body.email}, errorHandler);
+            if (result == null) {
+                await response.send(request.body.email + " is not subscribed to email notification");
+            } else if (result.hasOwnProperty("_id")) {
+                result = await db.deleteManyDoc({email: request.body.email}, errorHandler);
+                if (result.deletedCount >= 1)
+                    await response.send(request.body.email + " unsubscribed from email notification!");
+                else
+                    await response.send("");
+            } else
+                await response.send("");
+        } else if (request.body.check_availability != null) {
+            let centerFilteredData = await slot.checkSlots(request.body, errorHandler);
+            if (centerFilteredData.length)
+                await response.send(await content.contentFormatter(centerFilteredData));
             else
                 await response.send("");
         } else
             await response.send("");
-    } else if (request.body.unsubscribe != null) {
-        let result = await db.findOneDoc({email: request.body.email}, errorHandler);
-        if (result == null) {
-            await response.send(request.body.email + " is not subscribed to email notification");
-        } else if (result.hasOwnProperty("_id")) {
-            result = await db.deleteManyDoc({email: request.body.email}, errorHandler);
-            if (result.deletedCount >= 1)
-                await response.send(request.body.email + " unsubscribed from email notification!");
-            else
-                await response.send("");
-        } else
-            await response.send("");
-    } else if (request.body.check_availability != null) {
-        let centerFilteredData = await slot.checkSlots(request.body,errorHandler);
-        if (centerFilteredData.length)
-            await response.send(await content.contentFormatter(centerFilteredData));
-        else
-            await response.send("");
-    } else
-        await response.send("");
+    }
 });
 
 

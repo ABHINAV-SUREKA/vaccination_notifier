@@ -16,6 +16,14 @@ let dbConnect = async (errorHandler) => {
     }
 }
 
+let getDb = async (errorHandler) => {
+    try {
+        return await database;
+    } catch (error) {
+        errorHandler(error);
+    }
+}
+
 let findOneDoc = async (findCondition,errorHandler) => {
     try {
         return database.collection(collectionName).findOne(findCondition);
@@ -57,4 +65,4 @@ let deleteManyDoc = async (findCondition,errorHandler) => {
 }
 
 
-module.exports = { dbConnect, findOneDoc, findAllDoc, insertOneDoc, updateOneDoc, deleteManyDoc };
+module.exports = { dbConnect, getDb, findOneDoc, findAllDoc, insertOneDoc, updateOneDoc, deleteManyDoc };
