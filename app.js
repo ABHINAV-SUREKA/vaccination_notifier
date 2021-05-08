@@ -85,8 +85,7 @@ app.post("/action",async (request,response) => {
     console.log(request.body);
     if (request.body.subscribe != null) {
         let result = await db.findOneDoc({email: request.body.email}, errorHandler);
-        // todo: database null result check when db connection failed
-        if (result == null) {
+        if (!result) {
             result = await db.insertOneDoc({
                 email: request.body.email,
                 frequency: request.body.frequency,
@@ -95,10 +94,10 @@ app.post("/action",async (request,response) => {
                 location_value: request.body.location_value,
             }, errorHandler);
             if (result.insertedCount >= 1)
-                await response.send(result.ops[0].email + " successfully subscribed to receive email notification " + request.body.frequency);
+                await response.send(result.ops[0].email + " subscribed to receive email notification " + request.body.frequency + "!");
             else
                 await response.send("");
-        } else {
+        } else if(result.hasOwnProperty("_id")) {
             result = await db.updateOneDoc({email: request.body.email}, {
                 $set: {
                     frequency: request.body.frequency,
@@ -106,31 +105,34 @@ app.post("/action",async (request,response) => {
                     location: request.body.location,
                     location_value: request.body.location_value,
                 }}, errorHandler);
-                if(result.modifiedCount >= 1)
-                    await response.send(request.body.email + " already subscribed | Successfully updated email notification preferences");
-                else
-                    await response.send("");
-        }
+            if(result.modifiedCount > 0)
+                await response.send("Updated notification preferences for " + request.body.email + "! | User already subscribed");
+            else if(result.modifiedCount == 0 && result.matchedCount > 0)
+                await response.send("User already subscribed");
+            else
+                await response.send("");
+        } else
+            await response.send("");
     } else if (request.body.unsubscribe != null) {
         let result = await db.findOneDoc({email: request.body.email}, errorHandler);
         if (result == null) {
             await response.send(request.body.email + " is not subscribed to email notification");
-        } else {
+        } else if (result.hasOwnProperty("_id")) {
             result = await db.deleteManyDoc({email: request.body.email}, errorHandler);
             if (result.deletedCount >= 1)
-                await response.send(request.body.email + " successfully unsubscribed from email notification");
+                await response.send(request.body.email + " unsubscribed from email notification!");
             else
                 await response.send("");
-        }
+        } else
+            await response.send("");
     } else if (request.body.check_availability != null) {
         let centerFilteredData = await slot.checkSlots(request.body,errorHandler);
         if (centerFilteredData.length)
             await response.send(await content.contentFormatter(centerFilteredData));
         else
             await response.send("");
-    } else {
+    } else
         await response.send("");
-    }
 });
 
 

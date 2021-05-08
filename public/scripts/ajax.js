@@ -16,8 +16,12 @@ $(function(){
                 timeout: 20000,
             }).done((result) => {
                 console.log(result);
-                if (!result.length) {
+                if (!result.trim().length) {
                     alert_response = "Unable to subscribe at the moment!";
+                } else if ("User already subscribed" == result.trim()) {
+                    console.log("should n");
+                    alert_response = result;
+                    alert_type = "alert-info";
                 } else {
                     alert_response = result;
                     alert_type = "alert-success";
@@ -50,10 +54,14 @@ $(function(){
             }).done((result) => {
                 console.log(result);
                 if (!result.length) {
-                    result = "Unable to unsubscribe at the moment!";
+                    alert_response = "Unable to unsubscribe at the moment!";
+                } else if (result.indexOf("is not subscribed to email notification") > -1) {
+                    alert_response = result;
+                    alert_type = "alert-info";
+                } else {
+                    alert_response = result;
+                    alert_type = "alert-success";
                 }
-                alert_response = result;
-                alert_type = "alert-success";
             }).fail(function (jqXHR, textStatus, error) {
                 alert_response = "Unable to unsubscribe at the moment! | " + textStatus + " | " + error;
             }).always(function () {
