@@ -17,10 +17,11 @@ $(function(){
             }).done((result) => {
                 console.log(result);
                 if (!result.length) {
-                    result = "Unable to subscribe at the moment!";
+                    alert_response = "Unable to subscribe at the moment!";
+                } else {
+                    alert_response = result;
+                    alert_type = "alert-success";
                 }
-                alert_response = result;
-                alert_type = "alert-success";
             }).fail(function (jqXHR, textStatus, error) {
                 alert_response = "Unable to subscribe at the moment! | " + textStatus + " | " + error;
             }).always(function () {

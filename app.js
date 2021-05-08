@@ -85,6 +85,7 @@ app.post("/action",async (request,response) => {
     console.log(request.body);
     if (request.body.subscribe != null) {
         let result = await db.findOneDoc({email: request.body.email}, errorHandler);
+        // todo: database null result check when db connection failed
         if (result == null) {
             result = await db.insertOneDoc({
                 email: request.body.email,
