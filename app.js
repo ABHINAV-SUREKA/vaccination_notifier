@@ -29,8 +29,8 @@ cron.schedule("*/1 * * * *", async () => {
     for (const element of results) {
         if (!element.hasOwnProperty("last_notified_ts") || element.last_notified_ts.toString().length == 0) {
             let centerFilteredData = await slot.checkSlots(element,errorHandler);
-            if (centerFilteredData) {
-                await email.emailNotifier(element.email,centerFilteredData,errorHandler);
+            if (centerFilteredData.numRecords > 0) {
+                await email.emailNotifier(element.email, centerFilteredData.html, errorHandler);
             }
         } else {
             let timeDiffInMins = await Math.abs((Date.now() - element.last_notified_ts) / (1000 * 60));
@@ -38,32 +38,32 @@ cron.schedule("*/1 * * * *", async () => {
                 case "every hour":
                     if (60 <= timeDiffInMins) {
                         let centerFilteredData = await slot.checkSlots(element, errorHandler);
-                        if (centerFilteredData) {
-                            await email.emailNotifier(element.email, centerFilteredData, errorHandler);
+                        if (centerFilteredData.numRecords > 0) {
+                            await email.emailNotifier(element.email, centerFilteredData.html, errorHandler);
                         }
                     }
                     break;
                 case "every 6 hours":
                     if (360 <= timeDiffInMins) {
                         let centerFilteredData = await slot.checkSlots(element, errorHandler);
-                        if (centerFilteredData) {
-                            await email.emailNotifier(element.email, centerFilteredData, errorHandler);
+                        if (centerFilteredData.numRecords > 0) {
+                            await email.emailNotifier(element.email, centerFilteredData.html, errorHandler);
                         }
                     }
                     break;
                 case "every 12 hours":
                     if (720 <= timeDiffInMins) {
                         let centerFilteredData = await slot.checkSlots(element, errorHandler);
-                        if (centerFilteredData) {
-                            await email.emailNotifier(element.email, centerFilteredData, errorHandler);
+                        if (centerFilteredData.numRecords > 0) {
+                            await email.emailNotifier(element.email, centerFilteredData.html, errorHandler);
                         }
                     }
                     break;
                 case "every day":
                     if (1440 <= timeDiffInMins) {
                         let centerFilteredData = await slot.checkSlots(element, errorHandler);
-                        if (centerFilteredData) {
-                            await email.emailNotifier(element.email, centerFilteredData, errorHandler);
+                        if (centerFilteredData.numRecords > 0) {
+                            await email.emailNotifier(element.email, centerFilteredData.html, errorHandler);
                         }
                     }
                     break;

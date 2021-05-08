@@ -85,12 +85,10 @@ $(function(){
                 }
             }).done((result) => {
                 $("#table_container").empty();
-                console.log(result);
-                if (result.length) {
-                    console.log(result.length);
+                if (result.numRecords > 0) {
                     alert_type = "alert-success";
                     $("#table_container").removeAttr("hidden");
-                    $("#table_container").append(result);
+                    $("#table_container").append(result.html);
                 } else {
                     alert_response = "No records found!";
                     $("#table_container").empty();

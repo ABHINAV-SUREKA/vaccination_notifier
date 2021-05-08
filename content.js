@@ -69,7 +69,7 @@ let contentFormatter = async(centerFilteredData) => {
         </body>
         </html>
     `;
-    return html;
+    return {html: html, numRecords: centerFilteredData.length};
 };
 
 
