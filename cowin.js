@@ -3,32 +3,42 @@ const axios = require("axios")
 
 
 // Fetch info from Cowin
-let slotsCalenderByPin = async (element) => {
-    let config = {
-        method: "get",
-        url: "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=" + element.location_value + "&date=" + dateFormat(new Date(), "dd-mm-yyyy"),
-        headers: {
-            "accept": "application/json",
-            "Accept-Language": "hi_IN",
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
+let slotsCalenderByPin = async (element,errorHandler) => {
+    try {
+        let config = {
+            method: "get",
+            url: "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=" + element.location_value + "&date=" + dateFormat(new Date(), "dd-mm-yyyy"),
+            headers: {
+                "accept": "application/json",
+                "Accept-Language": "hi_IN",
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
+            }
         }
+        let response = await axios(config);
+        return await response.data;
+    } catch (error) {
+        errorHandler(error);
     }
-    let response = await axios(config);
-    return response.data;
+    return null;
 };
 
-let slotsCalenderByDistrict = async (element) => {
-    let config = {
-        method: "get",
-        url: "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=" + element.location_value + "&date=" + dateFormat(new Date(), "dd-mm-yyyy"),
-        headers: {
-            "accept": "application/json",
-            "Accept-Language": "hi_IN",
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
+let slotsCalenderByDistrict = async (element,errorHandler) => {
+    try {
+        let config = {
+            method: "get",
+            url: "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=" + element.location_value + "&date=" + dateFormat(new Date(), "dd-mm-yyyy"),
+            headers: {
+                "accept": "application/json",
+                "Accept-Language": "hi_IN",
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
+            }
         }
+        let response = await axios(config);
+        return await response.data;
+    } catch (error) {
+        errorHandler(error);
     }
-    let response = await axios(config);
-    return await response.data;
+    return null;
 };
 
 let getStates = async (errorHandler) => {
@@ -80,22 +90,5 @@ let getAllDistricts = async (errorHandler) => {
     }
 };
 
-let getDistrictsByState = async (stateId) => {
-    if (stateId) {
-        let config = {
-            method: "get",
-            url: "https://cdn-api.co-vin.in/api/v2/admin/location/districts/" + parseInt(stateId),
-            headers: {
-                "accept": "application/json",
-                "Accept-Language": "hi_IN",
-                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
-            }
-        }
-        let response = await axios(config);
-        return await response.data;
-    }
-};
 
-
-
-module.exports = { slotsCalenderByPin, slotsCalenderByDistrict, getAllDistricts, getDistrictsByState };
+module.exports = { slotsCalenderByPin, slotsCalenderByDistrict, getAllDistricts };
