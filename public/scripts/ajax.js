@@ -65,6 +65,7 @@ $(function(){
                 data: data,
                 timeout: 25000,
                 beforeSend: function() {
+                    $("#table_container").empty();
                     $("#table_container").removeAttr("hidden");
                     $("#table_container").append("Fetching results...");
                 }
