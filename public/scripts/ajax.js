@@ -77,7 +77,11 @@ $(function(){
                 } else {
                     $("#table_container").append("Unable to fetch data");
                 }
-            }).fail(function (jqXHR, textStatus, error) { alert("Unable to fetch data at this time | " + textStatus + " | " + error); });
+            }).fail(function (jqXHR, textStatus, error) {
+                alert("Unable to fetch data at this time | " + textStatus + " | " + error);
+                $("#table_container").empty();
+                $("#table_container").attr("hidden", true);
+            });
         }
     });
     $("#location").change(function() {
@@ -96,7 +100,7 @@ $(function(){
                 })
                     .done((result) => {
                         if (result.length) {
-                            $("#table_container").text("Select District");
+                            $("#location_value option:selected").text("Select District");
                             $.each(result, (i, stateObj) => {
                                 let div_state_data = "<option value=" + stateObj.state_id + " disabled>" + stateObj.state_name + "</option>";
                                 $("#location_value").append(div_state_data);
