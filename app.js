@@ -146,5 +146,7 @@ app.listen(port, () => {
 
 // Connect to MongoDB
 db.dbConnect(errorHandler).then(() => {
-    console.log("Connected to mongoDB");
+    console.log("Connected to MongoDB");
+}).catch((error) => {
+    console.log(error);
 });

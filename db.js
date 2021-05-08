@@ -12,6 +12,7 @@ let dbConnect = async (errorHandler) => {
         database = client.db(dbName);
     } catch (error) {
         errorHandler(error);
+        throw new Error("Failed to connect to MongoDB!");
     }
 }
 
