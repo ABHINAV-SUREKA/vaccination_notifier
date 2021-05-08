@@ -6,7 +6,9 @@ $(function(){
         $("#location_value").attr("required", true);
         if ($("#age").val().length != 0 && $("#email").val().length != 0 && $("#location_value").val().length != 0) {
             event.preventDefault();
-            var data = $("form#preferences").serialize() + "&subscribe=Subscribe";
+            let data = $("form#preferences").serialize() + "&subscribe=Subscribe";
+            let alert_type = "alert-danger";
+            let alert_response = "";
             $.ajax({
                 url: "action",
                 type: "post",
@@ -14,15 +16,19 @@ $(function(){
                 timeout: 20000,
             }).done((result) => {
                 console.log(result);
-                if (result.length) {
-                    var alert_data = "<div class=\"alert alert-success alert-dismissible fade show\" role=\"alert\">" +
-                        "                <strong>" + result + "</strong>" +
-                        "                <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>" +
-                        "            </div>";
-                    $("#alert_placeholder").append(alert_data);
+                if (!result.length) {
+                    result = "Unable to subscribe at the moment!";
                 }
+                alert_response = result;
+                alert_type = "alert-success";
             }).fail(function (jqXHR, textStatus, error) {
-                alert("Unable to fetch data at this time | " + textStatus + " | " + error);
+                alert_response = "Unable to subscribe at the moment! | " + textStatus + " | " + error;
+            }).always(function () {
+                let alert_data = "<div class=\"alert " + alert_type + " alert-dismissible fade show\" role=\"alert\">" +
+                    "                <strong>" + alert_response + "</strong>" +
+                    "                <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>" +
+                    "            </div>";
+                $("#alert_placeholder").append(alert_data);
             });
         }
     });
@@ -32,7 +38,9 @@ $(function(){
         $("#location_value").removeAttr("required");
         if ($("#email").val().length != 0) {
             event.preventDefault();
-            var data = $("form#preferences").serialize() + "&unsubscribe=Unsubscribe";
+            let data = $("form#preferences").serialize() + "&unsubscribe=Unsubscribe";
+            let alert_type = "alert-danger";
+            let alert_response = "";
             $.ajax({
                 url: "action",
                 type: "post",
@@ -40,15 +48,19 @@ $(function(){
                 timeout: 20000,
             }).done((result) => {
                 console.log(result);
-                if (result.length) {
-                    var alert_data = "<div class=\"alert alert-warning alert-dismissible fade show\" role=\"alert\">" +
-                        "                <strong>" + result + "</strong>" +
-                        "                <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>" +
-                        "            </div>";
-                    $("#alert_placeholder").append(alert_data);
+                if (!result.length) {
+                    result = "Unable to unsubscribe at the moment!";
                 }
+                alert_response = result;
+                alert_type = "alert-success";
             }).fail(function (jqXHR, textStatus, error) {
-                alert("Unable to fetch data at this time | " + textStatus + " | " + error);
+                alert_response = "Unable to unsubscribe at the moment! | " + textStatus + " | " + error;
+            }).always(function () {
+                let alert_data = "<div class=\"alert " + alert_type + " alert-dismissible fade show\" role=\"alert\">" +
+                    "                <strong>" + alert_response + "</strong>" +
+                    "                <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>" +
+                    "            </div>";
+                $("#alert_placeholder").append(alert_data);
             });
         }
     });
@@ -58,7 +70,9 @@ $(function(){
         $("#location_value").attr("required", true);
         if ($("#age").val().length != 0 && $("#location_value").val().length != 0) {
             event.preventDefault();
-            var data = $("form#preferences").serialize()+"&check_availability=Check Availability";
+            let data = $("form#preferences").serialize()+"&check_availability=Check Availability";
+            let alert_type = "alert-danger";
+            let alert_response = "";
             $.ajax({
                 url: "action",
                 type: "post",
@@ -71,17 +85,27 @@ $(function(){
                 }
             }).done((result) => {
                 $("#table_container").empty();
-                $("#table_container").removeAttr("hidden");
                 console.log(result);
                 if (result.length) {
+                    console.log(result.length);
+                    alert_type = "alert-success";
+                    $("#table_container").removeAttr("hidden");
                     $("#table_container").append(result);
                 } else {
-                    $("#table_container").append("Unable to fetch data");
+                    alert_response = "No records found!";
+                    $("#table_container").empty();
+                    $("#table_container").attr("hidden", true);
                 }
             }).fail(function (jqXHR, textStatus, error) {
-                alert("Unable to fetch data at this time | " + textStatus + " | " + error);
+                alert_response = "Unable to fetch vaccination details at the moment! | " + textStatus + " | " + error;
                 $("#table_container").empty();
                 $("#table_container").attr("hidden", true);
+            }).always(function () {
+                let alert_data = "<div class=\"alert " + alert_type + " alert-dismissible fade show\" role=\"alert\">" +
+                    "                <strong>" + alert_response + "</strong>" +
+                    "                <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>" +
+                    "            </div>";
+                $("#alert_placeholder").append(alert_data);
             });
         }
     });

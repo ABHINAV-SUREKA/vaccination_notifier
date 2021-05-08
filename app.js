@@ -93,8 +93,10 @@ app.post("/action",async (request,response) => {
                 location: request.body.location,
                 location_value: request.body.location_value,
             }, errorHandler);
-            if (result.insertedCount == 1)
+            if (result.insertedCount >= 1)
                 await response.send(result.ops[0].email + " successfully subscribed to receive email notification " + request.body.frequency);
+            else
+                await response.send("");
         } else {
             result = await db.updateOneDoc({email: request.body.email}, {
                 $set: {
@@ -104,7 +106,9 @@ app.post("/action",async (request,response) => {
                     location_value: request.body.location_value,
                 }}, errorHandler);
                 if(result.modifiedCount >= 1)
-                    response.send(request.body.email + " already subscribed | Successfully updated email notification preferences");
+                    await response.send(request.body.email + " already subscribed | Successfully updated email notification preferences");
+                else
+                    await response.send("");
         }
     } else if (request.body.unsubscribe != null) {
         let result = await db.findOneDoc({email: request.body.email}, errorHandler);
@@ -114,12 +118,17 @@ app.post("/action",async (request,response) => {
             result = await db.deleteManyDoc({email: request.body.email}, errorHandler);
             if (result.deletedCount >= 1)
                 await response.send(request.body.email + " successfully unsubscribed from email notification");
+            else
+                await response.send("");
         }
     } else if (request.body.check_availability != null) {
         let centerFilteredData = await slot.checkSlots(request.body,errorHandler);
-        if (centerFilteredData) {
-            response.send(await content.contentFormatter(centerFilteredData));
-        }
+        if (centerFilteredData.length)
+            await response.send(await content.contentFormatter(centerFilteredData));
+        else
+            await response.send("");
+    } else {
+        await response.send("");
     }
 });
 
