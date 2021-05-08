@@ -87,6 +87,7 @@ $(function(){
                 $("#table_container").empty();
                 if (result.numRecords > 0) {
                     alert_type = "alert-success";
+                    alert_response = "Fetched " + result.numRecords + " record(s)";
                     $("#table_container").removeAttr("hidden");
                     $("#table_container").append(result.html);
                 } else {
