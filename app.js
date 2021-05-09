@@ -153,9 +153,9 @@ app.listen(port, () => {
     console.log("Server is running at port: "+ port);
 });
 
-// Connect to MongoDB
+/*// Connect to MongoDB
 db.dbConnect(errorHandler).then(() => {
     console.log("Connected to MongoDB");
 }).catch((error) => {
     console.log(error);
-});
+});*/
