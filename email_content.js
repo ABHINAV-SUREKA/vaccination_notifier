@@ -1,4 +1,4 @@
-let contentFormatter = async(centerFilteredData) => {
+let emailContentFormatter = async(centerFilteredData) => {
     await console.log(centerFilteredData.length);
     await console.log(centerFilteredData[0].sessions.length);
     let rows = ``;
@@ -18,7 +18,7 @@ let contentFormatter = async(centerFilteredData) => {
         }
         let row = `
             <tr>
-                <th scope="row">` + (i + 1) + `</th>
+                <th>` + (i + 1) + `</th>
                 <td>` + centerFilteredData[i].name + `</td>
                 <td>` + centerFilteredData[i].address + `</td>
                 <td>` + centerFilteredData[i].district_name + `</td>
@@ -27,11 +27,11 @@ let contentFormatter = async(centerFilteredData) => {
                     <table class="table">
                         <thead class="thead-dark">
                             <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Date</th>
-                                <th scope="col">Min Age</th>
-                                <th scope="col">Available</th>
-                                <th scope="col">Vaccine</th>
+                                <th>#</th>
+                                <th>Date</th>
+                                <th>Min Age</th>
+                                <th>Available</th>
+                                <th>Vaccine</th>
                             </tr>
                         </thead>
                         <tbody>` + subrows + `</tbody>
@@ -44,17 +44,37 @@ let contentFormatter = async(centerFilteredData) => {
     let html = `
         <!DOCTYPE HTML>
         <html>
-        <head>
+        <head xmlns="http://www.w3.org/1999/xhtml" lang="en-GB">
             <title>Vaccination Notifier</title>
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
-            <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,900" rel="stylesheet">
-            <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-            <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">           
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <style>
+                #records {
+                    font-family: Verdana, Helvetica, sans-serif;
+                    border-collapse: collapse;
+                    width: 100%;
+                }
+                #records td, #records th {
+                    border: 1px solid #ddd;
+                    padding: 8px;
+                }
+                #records tr:nth-child(even){background-color: #f2f2f2;}
+                #records tr:hover {background-color: #ddd;}
+                #records th {
+                    padding-top: 12px;
+                    padding-bottom: 12px;
+                    text-align: left;
+                    background-color: #03161d;
+                    color: white;
+                }
+                .additionalStyles{
+                    font-family: Verdana, Helvetica, sans-serif;
+                }
+            </style>
         </head>
         <body class="text-center" data-new-gr-c-s-check-loaded="14.1008.0" data-gr-ext-installed="">
             <div class="table-responsive-lg">
-                <table class="table table-sm table-striped table-hover">
+                <table id="records" align="center">
                     <thead class="thead-dark">
                         <tr>
                             <th scope="col" style="width:3%">#</th>
@@ -75,4 +95,4 @@ let contentFormatter = async(centerFilteredData) => {
 };
 
 
-module.exports = { contentFormatter };
+module.exports = { emailContentFormatter };

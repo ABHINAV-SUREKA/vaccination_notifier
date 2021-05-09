@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer")
     , db = require( './db' )
-    , content = require('./content');
+    , content = require('./email_content');
 
 
 // Setting up SMTP transport connection (Using SES)
@@ -27,13 +27,13 @@ var transport = nodemailer.createTransport({
 
 // Send email notification
 let emailNotifier = async (toEmail,centerFilteredData,errorHandler) => {
-    const html = await content.contentFormatter(centerFilteredData);
+    const html = await content.emailContentFormatter(centerFilteredData);
     const text = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head>" +
         "<body>" +
         "<h1>Vaccination available near you!</h1><p>Get your vaccine today!</p>" +
         "</body></html>";
     const message = {
-        from: "'Vaccination Availability Notifier' <sureka.abhinav.2.0@gmail.com>",
+        from: "'Vaccine Notifier' <sureka.abhinav.2.0@gmail.com>",
         to: toEmail,
         subject: "Vaccination availability near you",
         text: text,

@@ -9,7 +9,7 @@ const express = require("express")
     , email = require("./email")
     , slot = require("./slot")
     , db = require( './db' )
-    , content = require('./content');
+    , content = require('./web_content');
 
 dotenv.config();
 app.use(express.static(static_path));
@@ -133,7 +133,7 @@ app.post("/action",async (request,response) => {
         } else if (request.body.check_availability != null) {
             let centerFilteredData = await slot.checkSlots(request.body, errorHandler);
             if (centerFilteredData.length)
-                await response.send(await content.contentFormatter(centerFilteredData));
+                await response.send(await content.webContentFormatter(centerFilteredData));
             else
                 await response.send("");
         } else
