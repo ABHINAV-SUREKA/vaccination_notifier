@@ -1,14 +1,15 @@
 const MongoClient = require("mongodb").MongoClient
     , dotenv = require('dotenv')
-    , uri = process.env.DB_URI
+    , uri = process.env.DB_URI  // for running in local machine, change to: uri = "mongodb://localhost:27017"
     , dbName = "Users"
     , collectionName = "users";
 
 dotenv.config();
 var database;
 
+
 let dbConnect = async (errorHandler) => {
-    let client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    let client = new MongoClient(uri);
     try {
         await client.connect();
         database = client.db(dbName);
