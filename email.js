@@ -1,6 +1,4 @@
 const nodemailer = require("nodemailer")
-    , awssdk = require("aws-sdk")
-    , ses = new awssdk.SES()
     , db = require( './db' )
     , content = require('./content');
 
