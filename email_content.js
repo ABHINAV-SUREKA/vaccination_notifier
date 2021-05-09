@@ -27,9 +27,9 @@ let emailContentFormatter = async(centerFilteredData) => {
                 <td>` + centerFilteredData[i].district_name + `</td>
                 <td>` + centerFilteredData[i].pincode + `</td>
                 <td>
-                    <table>
+                    <table style="width:100%">
                         <thead>
-                            <tr style="width:100%">
+                            <tr>
                                 <th>#</th>
                                 <th>Date</th>
                                 <th>Min Age</th>
