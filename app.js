@@ -148,14 +148,14 @@ app.post("/action",async (request,response) => {
 
 
 // Run application server
-const port = process.env.port || 3000;
+const port = process.env.port || 8080;
 app.listen(port, () => {
     console.log("Server is running at port: "+ port);
 });
 
-/*// Connect to MongoDB
+// Connect to MongoDB
 db.dbConnect(errorHandler).then(() => {
     console.log("Connected to MongoDB");
 }).catch((error) => {
     console.log(error);
-});*/
+});
