@@ -29,21 +29,19 @@ var transport = nodemailer.createTransport({
 
 // Send email notification
 let emailNotifier = async (toEmail,centerFilteredData,errorHandler) => {
-    await console.log("here1");
     const html = await content.contentFormatter(centerFilteredData);
     const text = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head>" +
         "<body>" +
         "<h1>Vaccination available near you!</h1><p>Get your vaccine today!</p>" +
         "</body></html>";
     const message = {
-        from: "no-reply@vaccination.notifier.com",
+        from: "'Vaccination Availability Notifier' <sureka.abhinav.2.0@gmail.com>",
         to: toEmail,
         subject: "Vaccination availability near you",
         text: text,
         html: html.html,
     };
     const notifiedTimestamp = await Date.now();
-    await console.log("here2");
     await transport.sendMail(message, async (error, info) => { // transport.sendMail() uses callback that's why await won't work here
         if (error) errorHandler(error);
         await console.log(info);
