@@ -1,12 +1,8 @@
 const express = require("express")
     , app = express()
     , bodyParser = require("body-parser")
-    , nodemailer = require("nodemailer")
-    , axios = require("axios")
     , cron = require('node-cron')
-    , nodemon = require("nodemon")
-    , fs = require('fs')
-    , dateFormat = require("dateformat")
+    , dotenv = require('dotenv')
     , path = require("path")
     , static_path = path.join(__dirname, "public")
     , cowin = require("./cowin")
@@ -15,6 +11,7 @@ const express = require("express")
     , db = require( './db' )
     , content = require('./content');
 
+dotenv.config();
 app.use(express.static(static_path));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));

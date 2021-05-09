@@ -1,12 +1,14 @@
-const MongoClient = require("mongodb").MongoClient;
-const url = "mongodb://localhost:27017";
-const dbName = "Users";
-const collectionName = "users";
+const MongoClient = require("mongodb").MongoClient
+    , dotenv = require('dotenv')
+    , uri = process.env.DB_URI
+    , dbName = "Users"
+    , collectionName = "users";
+
+dotenv.config();
 var database;
 
-
 let dbConnect = async (errorHandler) => {
-    let client = new MongoClient(url);
+    let client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     try {
         await client.connect();
         database = client.db(dbName);
