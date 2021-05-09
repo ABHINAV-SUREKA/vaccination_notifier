@@ -5,12 +5,15 @@ let webContentFormatter = async(centerFilteredData) => {
     for (i = 0; i < centerFilteredData.length; i++) {
         let subrows = ``;
         for (j = 0; j < centerFilteredData[i].sessions.length; j++) {
+            let textClass = "text-success";
+            if (centerFilteredData[i].sessions[j].available_capacity <= 10)
+                textClass = "text-warning";
             let subrow = `
                 <tr>
                     <th scope="row">` + (j+1) + `</th>
                     <td>` + centerFilteredData[i].sessions[j].date + `</td>
                     <td>` + centerFilteredData[i].sessions[j].min_age_limit + `</td>
-                    <td>` + centerFilteredData[i].sessions[j].available_capacity + `</td>
+                    <td class="` + textClass + `">` + centerFilteredData[i].sessions[j].available_capacity + `</td>
                     <td>` + centerFilteredData[i].sessions[j].vaccine + `</td>
                 </tr>
             `;

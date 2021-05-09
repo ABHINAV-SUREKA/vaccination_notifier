@@ -5,12 +5,15 @@ let emailContentFormatter = async(centerFilteredData) => {
     for (i = 0; i < centerFilteredData.length; i++) {
         let subrows = ``;
         for (j = 0; j < centerFilteredData[i].sessions.length; j++) {
+            let textColor = "green";
+            if (centerFilteredData[i].sessions[j].available_capacity <= 10)
+                textColor = "yellow";
             let subrow = `
                 <tr>
                     <td>` + (j+1) + `</td>
                     <td>` + centerFilteredData[i].sessions[j].date + `</td>
                     <td>` + centerFilteredData[i].sessions[j].min_age_limit + `</td>
-                    <td>` + centerFilteredData[i].sessions[j].available_capacity + `</td>
+                    <td style="color:` + textColor +`">` + centerFilteredData[i].sessions[j].available_capacity + `</td>
                     <td>` + centerFilteredData[i].sessions[j].vaccine + `</td>
                 </tr>
             `;
@@ -58,7 +61,9 @@ let emailContentFormatter = async(centerFilteredData) => {
                     border: 1px solid #ddd;
                     padding: 8px;
                 }
-                #records tr:nth-child(even){background-color: #f2f2f2;}
+                #records tr:nth-child(even){
+                    background-color: #f2f2f2;
+                }
                 #records tr:hover {background-color: #ddd;}
                 #records th {
                     padding-top: 12px;
