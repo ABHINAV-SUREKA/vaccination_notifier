@@ -57,7 +57,7 @@ let webContentFormatter = async(centerFilteredData) => {
         </head>
         <body class="text-center" data-new-gr-c-s-check-loaded="14.1008.0" data-gr-ext-installed="">
             <div class="table-responsive-lg">
-                <table class="table table-sm table-striped table-hover">
+                <table class="table table-sm table-striped table-hover" id="records">
                     <thead class="thead-dark">
                         <tr>
                             <th scope="col" style="width:3%">#</th>
