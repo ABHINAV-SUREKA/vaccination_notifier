@@ -2,6 +2,8 @@ const nodemailer = require("nodemailer")
     , fs = require('fs')
     , dateFormat = require("dateformat")
     , { google } = require("googleapis")
+    , awssdk = require("aws-sdk")
+    , cors = require("cors")
     , db = require( './db' )
     , content = require('./content');
 
@@ -33,7 +35,7 @@ let emailNotifier = async (toEmail,centerFilteredData,errorHandler) => {
         "</body></html>";
     const accessToken = await oAuth2Client.getAccessToken(); // fetch accessToken everytime as it gets updated periodically
     // Setting up SMTP transport connection
-    const transport = nodemailer.createTransport({
+    const transport = await nodemailer.createTransport({
         service: 'gmail',
         auth: {
             type: 'OAuth2',

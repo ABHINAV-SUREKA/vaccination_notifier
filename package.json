@@ -2,7 +2,7 @@
   "name": "vaccination_notifier",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,7 +16,9 @@
     "mongoose": "^5.12.7"
   },
   "devDependencies": {
+    "aws-sdk": "^2.903.0",
     "axios": "^0.21.1",
+    "cors": "^2.8.5",
     "dateformat": "^4.5.1",
     "mongodb": "^3.6.6",
     "node-cron": "^3.0.0",
