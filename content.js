@@ -10,6 +10,7 @@ let contentFormatter = async(centerFilteredData) => {
                     <th scope="row">` + (j+1) + `</th>
                     <td>` + centerFilteredData[i].sessions[j].date + `</td>
                     <td>` + centerFilteredData[i].sessions[j].min_age_limit + `</td>
+                    <td>` + centerFilteredData[i].sessions[j].available_capacity + `</td>
                     <td>` + centerFilteredData[i].sessions[j].vaccine + `</td>
                 </tr>
             `;
@@ -29,6 +30,7 @@ let contentFormatter = async(centerFilteredData) => {
                                 <th scope="col">#</th>
                                 <th scope="col">Date</th>
                                 <th scope="col">Min Age</th>
+                                <th scope="col">Available</th>
                                 <th scope="col">Vaccine</th>
                             </tr>
                         </thead>
