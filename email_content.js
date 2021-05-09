@@ -7,7 +7,7 @@ let emailContentFormatter = async(centerFilteredData) => {
         for (j = 0; j < centerFilteredData[i].sessions.length; j++) {
             let textColor = "green";
             if (centerFilteredData[i].sessions[j].available_capacity <= 10)
-                textColor = "yellow";
+                textColor = "#afa31a";
             let subrow = `
                 <tr>
                     <td>` + (j+1) + `</td>
