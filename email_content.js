@@ -59,16 +59,16 @@ let emailContentFormatter = async(centerFilteredData) => {
                 }
                 #records td, #records th {
                     border: 1px solid #ddd;
-                    padding: 8px;
+                    padding: 1px;
                 }
                 #records tr:nth-child(even){
                     background-color: #f2f2f2;
                 }
                 #records tr:hover {background-color: #ddd;}
                 #records th {
-                    padding-top: 12px;
-                    padding-bottom: 12px;
-                    text-align: left;
+                    padding-top: 5px;
+                    padding-bottom: 5px;
+                    text-align: center;
                     background-color: #343a40;
                     color: white;
                 }
