@@ -155,7 +155,7 @@ app.get("/action/:token", verifyToken, async (request,response) => {
         let result = await db.findOneDoc({email: request.authenticatedData.user.email}, errorHandler);
         let verifyMsg = "";
         if (result && result.hasOwnProperty("_id")) {
-            verifyMsg = await encodeURIComponent(" User already subscribed");
+            verifyMsg = await encodeURIComponent("User already subscribed");
             await response.redirect("/?verifyMsg=" + verifyMsg);
         } else {
             result = await db.insertOneDoc({
@@ -182,7 +182,7 @@ app.post("/action", async (request,response) => {
             if (request.body.subscribe != null) {
                 let result = await db.findOneDoc({email: request.body.email}, errorHandler);
                 if (!result) {
-                    const token = await jwt.sign({user: request.body}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1m'});
+                    const token = await jwt.sign({user: request.body}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '5m'});
                     const tokenData = `<h3>Please click on below link to start receiving vaccine notifications</h3>
                                        <p>(Link valid for only 1 hour)</p>
                                        <a href="` + process.env.CLIENT_URL + `/action/` + token + `">` + process.env.CLIENT_URL + `/action/` + token + `</a>`;

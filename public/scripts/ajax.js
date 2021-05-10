@@ -1,5 +1,25 @@
 $(function(){
-    var district_data_block = "";
+    let district_data_block = "";
+    let urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('verifyMsg')) {
+        if (urlParams.get("verifyMsg").indexOf("User successfully subscribed") > -1) {
+            let alert_type = "alert-success";
+            let alert_response = urlParams.get("verifyMsg");
+            let alert_data = "<div class=\"alert " + alert_type + " alert-dismissible fade show\" role=\"alert\">" +
+                "                <strong>" + alert_response + "</strong>" +
+                "                <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>" +
+                "            </div>";
+            $("#alert_placeholder").append(alert_data);
+        } else if(urlParams.get("verifyMsg").indexOf("User already subscribed") > -1) {
+            let alert_type = "alert-info";
+            let alert_response = urlParams.get("verifyMsg");
+            let alert_data = "<div class=\"alert " + alert_type + " alert-dismissible fade show\" role=\"alert\">" +
+                "                <strong>" + alert_response + "</strong>" +
+                "                <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>" +
+                "            </div>";
+            $("#alert_placeholder").append(alert_data);
+        }
+    }
     $("input#subscribe").click((event) => {
         $("#age").attr("required", true);
         $("#email").attr("required", true);
