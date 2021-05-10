@@ -141,9 +141,9 @@ let verifyToken = async (request, response, next) => {
 
 
 // Handling server side requests and responses
-app.get("/:content", async (request,response) => {
-    if (request.params.content)
-        await console.log(request.params.content);
+app.get("/", async (request,response) => {
+    if (request.query.verifyMsg)
+        await console.log(request.query.verifyMsg);
     await response.sendFile(path.join(static_path, "/index.html"));
 });
 app.get("/district_list", async (request,response) => {
@@ -153,10 +153,10 @@ app.get("/district_list", async (request,response) => {
 app.get("/action/:token", verifyToken, async (request,response) => {
     if (request.authenticatedData != null) {
         let result = await db.findOneDoc({email: request.authenticatedData.user.email}, errorHandler);
-        let responseMsg = "";
+        let verifyMsg = "";
         if (result && result.hasOwnProperty("_id")) {
-            responseMsg = await encodeURIComponent(" User already subscribed");
-            await response.redirect("/" + responseMsg);
+            verifyMsg = await encodeURIComponent(" User already subscribed");
+            await response.redirect("/?verifyMsg=" + verifyMsg);
         } else {
             result = await db.insertOneDoc({
                 email: request.authenticatedData.user.email,
@@ -166,8 +166,8 @@ app.get("/action/:token", verifyToken, async (request,response) => {
                 location_value: request.authenticatedData.user.location_value,
             }, errorHandler);
             if (result.insertedCount >= 1) {
-                responseMsg = encodeURIComponent("User successfully subscribed to receive email notification!");
-                await response.redirect("/" + responseMsg);
+                verifyMsg = encodeURIComponent("User successfully subscribed to receive email notification!");
+                await response.redirect("/?verifyMsg=" + verifyMsg);
             } else
                 await response.redirect("/");
         }
