@@ -1,4 +1,5 @@
 $(function(){
+    $("#records").DataTable();
     let district_data_block = "";
     let urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('verifyMsg')) {
