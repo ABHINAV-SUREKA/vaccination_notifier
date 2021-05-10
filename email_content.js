@@ -79,7 +79,7 @@ let emailContentFormatter = async(centerFilteredData) => {
         </head>
         <body class="text-center" data-new-gr-c-s-check-loaded="14.1008.0" data-gr-ext-installed="">
             <h3>Vaccine availability details for your preferred location:</h3>
-            Get your vaccine today!
+            Get vaccinated today!
             <p></p>
             <div class="table-responsive-lg">
                 <table id="records" align="center">

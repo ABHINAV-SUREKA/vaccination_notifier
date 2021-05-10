@@ -27,33 +27,48 @@ var transport = nodemailer.createTransport({
 
 // Send email notification
 let emailNotifier = async (toEmail,centerFilteredData,errorHandler) => {
-    const html = await content.emailContentFormatter(centerFilteredData);
-    const text = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head>" +
-        "<body>" +
-        "<h1>Vaccination available near you!</h1><p>Get your vaccine today!</p>" +
-        "</body></html>";
-    const message = {
-        from: "'Vaccine Notifier' <sureka.abhinav.2.0@gmail.com>",
-        to: toEmail,
-        subject: "Vaccination availability near you",
-        text: text,
-        html: html.html,
-    };
-    const notifiedTimestamp = await Date.now();
-    await transport.sendMail(message, async (error, info) => { // transport.sendMail() uses callback that's why await won't work here
-        if (error) errorHandler(error);
-        await console.log(info);
-        await console.log("Notification sent to " + toEmail + " on " + new Date(notifiedTimestamp));
-        let result = await db.updateOneDoc({email: toEmail},{
-            $set: {
-                last_notified_ts: notifiedTimestamp,
-            }}, errorHandler);
-        if (error) errorHandler(error);
-        if(result.modifiedCount == 1)
-            await console.log("Updated 'last_notified_ts' for " + toEmail + " with " + notifiedTimestamp);
-        });
-    return "sending mail...";
+    try {
+        const html = await content.emailContentFormatter(centerFilteredData);
+        const text = "Vaccination available in your preferred location! Get vaccinated today.";
+        const message = {
+            from: "'Vaccine Notifier' <sureka.abhinav.2.0@gmail.com>",
+            to: toEmail,
+            subject: "Vaccination availability near you",
+            text: text,
+            html: html.html,
+        };
+        return await transport.sendMail(message);
+    } catch (error) {
+        errorHandler(error);
+    }
+}
+
+// Send verification email
+let emailVerifier = async (toEmail,content,errorHandler) => {
+    try {
+        let html = `
+        <html>
+        <head xmlns="http://www.w3.org/1999/xhtml" lang="en-GB">
+            <title>Vaccination Notifier</title>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        </head>
+        <body class="text-center" data-new-gr-c-s-check-loaded="14.1008.0" data-gr-ext-installed="">` + content + `</body>
+        </html>
+        `;
+        const text = content;
+        const message = {
+            from: "'Vaccine Notifier' <sureka.abhinav.2.0@gmail.com>",
+            to: toEmail,
+            subject: "Verify email",
+            text: text,
+            html: html,
+        };
+        return await transport.sendMail(message);
+    } catch (error) {
+        errorHandler(error);
+    }
 }
 
 
-module.exports = { emailNotifier };
+module.exports = { emailNotifier, emailVerifier };

@@ -13,13 +13,15 @@ $(function(){
                 url: "action",
                 type: "post",
                 data: data,
-                timeout: 20000,
+                timeout: 45000,
             }).done((result) => {
                 console.log(result);
                 if (!result.trim().length) {
                     alert_response = "Unable to subscribe at the moment!";
                 } else if ("User already subscribed" == result.trim()) {
-                    console.log("should n");
+                    alert_response = result;
+                    alert_type = "alert-info";
+                } else if (result.indexOf("A verification email has been sent") > -1) {
                     alert_response = result;
                     alert_type = "alert-info";
                 } else {

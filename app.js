@@ -3,6 +3,7 @@ const express = require("express")
     , bodyParser = require("body-parser")
     , cron = require('node-cron')
     , dotenv = require('dotenv')
+    , jwt = require('jsonwebtoken')
     , path = require("path")
     , static_path = path.join(__dirname, "public")
     , cowin = require("./cowin")
@@ -28,9 +29,19 @@ cron.schedule("*/1 * * * *", async () => {
         const results = await cursor.toArray();
         for (const element of results) {
             if (!element.hasOwnProperty("last_notified_ts") || element.last_notified_ts.toString().length == 0) {
-                let centerFilteredData = await slot.checkSlots(element, errorHandler);
+                const centerFilteredData = await slot.checkSlots(element, errorHandler);
                 if (centerFilteredData.length > 0) {
-                    await email.emailNotifier(element.email, centerFilteredData, errorHandler);
+                    const emailResponse = await email.emailNotifier(element.email, centerFilteredData, errorHandler);
+                    if (emailResponse) {
+                        const notifiedTimestamp = await Date.now();
+                        await console.log("Notification sent to " + element.email + " on " + new Date(notifiedTimestamp));
+                        let result = await db.updateOneDoc({email: element.email},{
+                            $set: {
+                                last_notified_ts: notifiedTimestamp,
+                            }}, errorHandler);
+                        if (result.modifiedCount > 0)
+                            await console.log("Updated 'last_notified_ts' for " + element.email + " with " + notifiedTimestamp);
+                    }
                 }
             } else {
                 let timeDiffInMins = await Math.abs((Date.now() - element.last_notified_ts) / (1000 * 60));
@@ -39,7 +50,35 @@ cron.schedule("*/1 * * * *", async () => {
                         if (60 <= timeDiffInMins) {
                             let centerFilteredData = await slot.checkSlots(element, errorHandler);
                             if (centerFilteredData.length > 0) {
-                                await email.emailNotifier(element.email, centerFilteredData, errorHandler);
+                                const emailResponse = await email.emailNotifier(element.email, centerFilteredData, errorHandler);
+                                if (emailResponse) {
+                                    const notifiedTimestamp = await Date.now();
+                                    await console.log("Notification sent to " + element.email + " on " + new Date(notifiedTimestamp));
+                                    let result = await db.updateOneDoc({email: element.email},{
+                                        $set: {
+                                            last_notified_ts: notifiedTimestamp,
+                                        }}, errorHandler);
+                                    if (result.modifiedCount > 0)
+                                        await console.log("Updated 'last_notified_ts' for " + element.email + " with " + notifiedTimestamp);
+                                }
+                            }
+                        }
+                        break;
+                    case "every 3 hours":
+                        if (180 <= timeDiffInMins) {
+                            let centerFilteredData = await slot.checkSlots(element, errorHandler);
+                            if (centerFilteredData.length > 0) {
+                                const emailResponse = await email.emailNotifier(element.email, centerFilteredData, errorHandler);
+                                if (emailResponse) {
+                                    const notifiedTimestamp = await Date.now();
+                                    await console.log("Notification sent to " + element.email + " on " + new Date(notifiedTimestamp));
+                                    let result = await db.updateOneDoc({email: element.email},{
+                                        $set: {
+                                            last_notified_ts: notifiedTimestamp,
+                                        }}, errorHandler);
+                                    if (result.modifiedCount > 0)
+                                        await console.log("Updated 'last_notified_ts' for " + element.email + " with " + notifiedTimestamp);
+                                }
                             }
                         }
                         break;
@@ -47,7 +86,17 @@ cron.schedule("*/1 * * * *", async () => {
                         if (360 <= timeDiffInMins) {
                             let centerFilteredData = await slot.checkSlots(element, errorHandler);
                             if (centerFilteredData.length > 0) {
-                                await email.emailNotifier(element.email, centerFilteredData, errorHandler);
+                                const emailResponse = await email.emailNotifier(element.email, centerFilteredData, errorHandler);
+                                if (emailResponse) {
+                                    const notifiedTimestamp = await Date.now();
+                                    await console.log("Notification sent to " + element.email + " on " + new Date(notifiedTimestamp));
+                                    let result = await db.updateOneDoc({email: element.email},{
+                                        $set: {
+                                            last_notified_ts: notifiedTimestamp,
+                                        }}, errorHandler);
+                                    if (result.modifiedCount > 0)
+                                        await console.log("Updated 'last_notified_ts' for " + element.email + " with " + notifiedTimestamp);
+                                }
                             }
                         }
                         break;
@@ -55,15 +104,17 @@ cron.schedule("*/1 * * * *", async () => {
                         if (720 <= timeDiffInMins) {
                             let centerFilteredData = await slot.checkSlots(element, errorHandler);
                             if (centerFilteredData.length > 0) {
-                                await email.emailNotifier(element.email, centerFilteredData, errorHandler);
-                            }
-                        }
-                        break;
-                    case "every day":
-                        if (1440 <= timeDiffInMins) {
-                            let centerFilteredData = await slot.checkSlots(element, errorHandler);
-                            if (centerFilteredData.length > 0) {
-                                await email.emailNotifier(element.email, centerFilteredData, errorHandler);
+                                const emailResponse = await email.emailNotifier(element.email, centerFilteredData, errorHandler);
+                                if (emailResponse) {
+                                    const notifiedTimestamp = await Date.now();
+                                    await console.log("Notification sent to " + element.email + " on " + new Date(notifiedTimestamp));
+                                    let result = await db.updateOneDoc({email: element.email},{
+                                        $set: {
+                                            last_notified_ts: notifiedTimestamp,
+                                        }}, errorHandler);
+                                    if (result.modifiedCount > 0)
+                                        await console.log("Updated 'last_notified_ts' for " + element.email + " with " + notifiedTimestamp);
+                                }
                             }
                         }
                         break;
@@ -74,70 +125,112 @@ cron.schedule("*/1 * * * *", async () => {
 });
 
 
+// User verification during subscription
+let verifyToken = async (request, response, next) => {
+    if (request.params.token != null) {
+        try {
+            let authenticatedData = await jwt.verify(request.params.token, process.env.ACCESS_TOKEN_SECRET);
+            request.authenticatedData = authenticatedData;
+            await next();
+        } catch (error) {
+            await errorHandler(error);
+            await response.sendStatus(403);
+        }
+    }
+};
+
+
 // Handling server side requests and responses
-app.get("/", async (request,response) => {
+app.get("/:content", async (request,response) => {
+    if (request.params.content)
+        await console.log(request.params.content);
     await response.sendFile(path.join(static_path, "/index.html"));
 });
 app.get("/district_list", async (request,response) => {
     let promised_district_data = await cowin.getAllDistricts(errorHandler);
     await response.send(promised_district_data);
 });
-app.post("/action",async (request,response) => {
+app.get("/action/:token", verifyToken, async (request,response) => {
+    if (request.authenticatedData != null) {
+        let result = await db.findOneDoc({email: request.authenticatedData.user.email}, errorHandler);
+        let responseMsg = "";
+        if (result && result.hasOwnProperty("_id")) {
+            responseMsg = await encodeURIComponent(" User already subscribed");
+            await response.redirect("/" + responseMsg);
+        } else {
+            result = await db.insertOneDoc({
+                email: request.authenticatedData.user.email,
+                frequency: request.authenticatedData.user.frequency,
+                age: request.authenticatedData.user.age,
+                location: request.authenticatedData.user.location,
+                location_value: request.authenticatedData.user.location_value,
+            }, errorHandler);
+            if (result.insertedCount >= 1) {
+                responseMsg = encodeURIComponent("User successfully subscribed to receive email notification!");
+                await response.redirect("/" + responseMsg);
+            } else
+                await response.redirect("/");
+        }
+    } else await response.redirect("/");
+});
+app.post("/action", async (request,response) => {
     console.log(request.body);
-    if (undefined == await db.getDb(errorHandler)) {
-        await response.send("");
-    } else {
-        if (request.body.subscribe != null) {
-            let result = await db.findOneDoc({email: request.body.email}, errorHandler);
-            if (!result) {
-                result = await db.insertOneDoc({
-                    email: request.body.email,
-                    frequency: request.body.frequency,
-                    age: request.body.age,
-                    location: request.body.location,
-                    location_value: request.body.location_value,
-                }, errorHandler);
-                if (result.insertedCount >= 1)
-                    await response.send(result.ops[0].email + " subscribed to receive email notification " + request.body.frequency + "!");
-                else
-                    await response.send("");
-            } else if (result.hasOwnProperty("_id")) {
-                result = await db.updateOneDoc({email: request.body.email}, {
-                    $set: {
-                        frequency: request.body.frequency,
-                        age: request.body.age,
-                        location: request.body.location,
-                        location_value: request.body.location_value,
-                    }
-                }, errorHandler);
-                if (result.modifiedCount > 0)
-                    await response.send("Updated notification preferences for " + request.body.email + " | User already subscribed!");
-                else if (result.modifiedCount == 0 && result.matchedCount > 0)
-                    await response.send("User already subscribed");
-                else
-                    await response.send("");
-            } else
-                await response.send("");
-        } else if (request.body.unsubscribe != null) {
-            let result = await db.findOneDoc({email: request.body.email}, errorHandler);
-            if (result == null) {
-                await response.send(request.body.email + " is not subscribed to email notification");
-            } else if (result.hasOwnProperty("_id")) {
-                result = await db.deleteManyDoc({email: request.body.email}, errorHandler);
-                if (result.deletedCount >= 1)
-                    await response.send(request.body.email + " unsubscribed from email notification!");
-                else
-                    await response.send("");
-            } else
-                await response.send("");
-        } else if (request.body.check_availability != null) {
-            let centerFilteredData = await slot.checkSlots(request.body, errorHandler);
-            if (centerFilteredData.length)
-                await response.send(await content.webContentFormatter(centerFilteredData));
-            else
-                await response.send("");
-        } else
+    try {
+        if (undefined == await db.getDb(errorHandler)) {
             await response.send("");
+        } else {
+            if (request.body.subscribe != null) {
+                let result = await db.findOneDoc({email: request.body.email}, errorHandler);
+                if (!result) {
+                    const token = await jwt.sign({user: request.body}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1m'});
+                    const tokenData = `<h3>Please click on below link to start receiving vaccine notifications</h3>
+                                       <p>(Link valid for only 1 hour)</p>
+                                       <a href="` + process.env.CLIENT_URL + `/action/` + token + `">` + process.env.CLIENT_URL + `/action/` + token + `</a>`;
+                    const emailResponse = await email.emailVerifier(request.body.email, tokenData, errorHandler);
+                    if (emailResponse) {
+                        await response.send("A verification email has been sent to " + request.body.email + " | Kindly activate to receive vaccine notifications " + request.body.frequency);
+                    }
+                } else if (result && result.hasOwnProperty("_id")) {
+                    result = await db.updateOneDoc({email: request.body.email}, {
+                        $set: {
+                            frequency: request.body.frequency,
+                            age: request.body.age,
+                            location: request.body.location,
+                            location_value: request.body.location_value,
+                        }
+                    }, errorHandler);
+                    if (result.modifiedCount > 0)
+                        await response.send("Updated notification preferences for " + request.body.email + " | User already subscribed!");
+                    else if (result.modifiedCount == 0 && result.matchedCount > 0)
+                        await response.send("User already subscribed");
+                    else
+                        await response.send("");
+                } else
+                    await response.send("");
+            } else if (request.body.unsubscribe != null) {
+                let result = await db.findOneDoc({email: request.body.email}, errorHandler);
+                if (result == null) {
+                    await response.send(request.body.email + " is not subscribed to email notification");
+                } else if (result && result.hasOwnProperty("_id")) {
+                    result = await db.deleteManyDoc({email: request.body.email}, errorHandler);
+                    if (result.deletedCount >= 1)
+                        await response.send(request.body.email + " unsubscribed from email notification!");
+                    else
+                        await response.send("");
+                } else
+                    await response.send("");
+            } else if (request.body.check_availability != null) {
+                let centerFilteredData = await slot.checkSlots(request.body, errorHandler);
+                if (centerFilteredData.length)
+                    await response.send(await content.webContentFormatter(centerFilteredData));
+                else
+                    await response.send("");
+            } else
+                await response.send("");
+        }
+    } catch (error) {
+        errorHandler(error);
+        await response.send("");
     }
 });
 
