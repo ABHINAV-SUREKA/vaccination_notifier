@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9d597380-0272-44fb-b88e-20962fe3a7ce" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/email.js" beforeDir="false" afterPath="$PROJECT_DIR$/email.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/email_content.js" beforeDir="false" afterPath="$PROJECT_DIR$/email_content.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,20 +72,20 @@
     <MESSAGE value="index html" />
     <MESSAGE value="ajax over view engine" />
     <MESSAGE value="fixing mongodb conenctions" />
-    <MESSAGE value="fixing email" />
     <MESSAGE value="fixing email verification" />
     <MESSAGE value="fixing views" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixing views" />
+    <MESSAGE value="fixing email" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixing email" />
   </component>
   <component name="WindowStateProjectService">
     <state x="593" y="328" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1620403988680">
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
     <state x="593" y="328" key="#com.intellij.fileTypes.FileTypeChooser/0.23.1792.1019@0.23.1792.1019" timestamp="1620403988680" />
-    <state x="435" y="90" key="CommitChangelistDialog2" timestamp="1620659531868">
+    <state x="435" y="90" key="CommitChangelistDialog2" timestamp="1620721696915">
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
-    <state x="435" y="90" key="CommitChangelistDialog2/0.23.1792.1019@0.23.1792.1019" timestamp="1620659531868" />
+    <state x="435" y="90" key="CommitChangelistDialog2/0.23.1792.1019@0.23.1792.1019" timestamp="1620721696915" />
     <state x="142" y="100" key="DiffContextDialog" timestamp="1620648700462">
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
@@ -112,10 +114,10 @@
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
     <state width="1507" height="269" key="GridCell.Tab.0.right/0.23.1792.1019@0.23.1792.1019" timestamp="1620138077650" />
-    <state x="458" y="259" key="Vcs.Push.Dialog.v2" timestamp="1620659533078">
+    <state x="458" y="259" key="Vcs.Push.Dialog.v2" timestamp="1620721698383">
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
-    <state x="458" y="259" key="Vcs.Push.Dialog.v2/0.23.1792.1019@0.23.1792.1019" timestamp="1620659533078" />
+    <state x="458" y="259" key="Vcs.Push.Dialog.v2/0.23.1792.1019@0.23.1792.1019" timestamp="1620721698383" />
     <state x="478" y="136" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1620578656025">
       <screen x="0" y="23" width="1792" height="1019" />
     </state>

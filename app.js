@@ -20,7 +20,7 @@ let errorHandler = (error) => { console.log("Error encountered: " + error); }
 
 
 // Send periodic emails to subscribers
-cron.schedule("*/1 * * * *", async () => {
+cron.schedule("*/2 * * * *", async () => {
     console.log("cron running");
     if (undefined == await db.getDb(errorHandler)) {
         console.log("Failed to connect to MongoDB!");
@@ -182,9 +182,9 @@ app.post("/action", async (request,response) => {
             if (request.body.subscribe != null) {
                 let result = await db.findOneDoc({email: request.body.email}, errorHandler);
                 if (!result) {
-                    const token = await jwt.sign({user: request.body}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '5m'});
+                    const token = await jwt.sign({user: request.body}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '30m'});
                     const tokenData = `<h3>Please click on below link to start receiving vaccine notifications</h3>
-                                       <p>(Link valid for only 1 hour)</p>
+                                       <p>(Link valid for only 30 min)</p>
                                        <a href="` + process.env.CLIENT_URL + `/action/` + token + `">` + process.env.CLIENT_URL + `/action/` + token + `</a>`;
                     const emailResponse = await email.emailVerifier(request.body.email, tokenData, errorHandler);
                     if (emailResponse) {
