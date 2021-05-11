@@ -27,6 +27,14 @@
             /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
             background: linear-gradient(to bottom, rgba(126, 150, 196, 0.15), rgba(186, 200, 224, 0.15))
         }
+        .gradient-custom-modal {
+            /* fallback for old browsers */
+            background: #d9eef2;
+            /* Chrome 10-25, Safari 5.1-6 */
+            background: -webkit-linear-gradient(to bottom, rgba(217, 238, 242, 0.75), rgba(194, 233, 239, 0.75));
+            /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            background: linear-gradient(to bottom, rgba(217, 238, 242, 0.75), rgba(194, 233, 239, 0.75))
+        }
         body {
             font-family: 'Courier New', monospace;
         }
@@ -67,11 +75,11 @@
                 email notifications about vaccine availability near you
             </p>
             <div class="form-row pt-3">
-                <div class="form-group col-sm-5">
+                <div class="form-group col-md-5">
                     <label class="sr-only" for="email">Email</label>
                     <input class="form-control" type="email" name="email" id="email" placeholder="Email address" autofocus="">
                 </div>
-                <div class="form-group col-sm-2">
+                <div class="form-group col-md-2">
                     <label class="sr-only" for="">Age</label>
                     <input class="form-control" type="number" name="age" id="age" placeholder="Age" autofocus="">
                 </div>

@@ -30,6 +30,7 @@ $(function(){
             let data = $("form#preferences").serialize() + "&subscribe=Subscribe";
             let alert_type = "alert-danger";
             let alert_response = "";
+            let alert_data = "";
             $.ajax({
                 url: "action",
                 type: "post",
@@ -39,23 +40,55 @@ $(function(){
                 console.log(result);
                 if (!result.trim().length) {
                     alert_response = "Unable to subscribe at the moment!";
+                    alert_data = "<div class=\"alert " + alert_type + " alert-dismissible fade show\" role=\"alert\">" +
+                        "           <strong>" + alert_response + "</strong>" +
+                        "           <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>" +
+                        "         </div>";
                 } else if ("User already subscribed" == result.trim()) {
                     alert_response = result;
                     alert_type = "alert-info";
+                    alert_data = "<div class=\"alert " + alert_type + " alert-dismissible fade show\" role=\"alert\">" +
+                        "           <strong>" + alert_response + "</strong>" +
+                        "           <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>" +
+                        "         </div>";
                 } else if (result.indexOf("A verification email has been sent") > -1) {
                     alert_response = result;
                     alert_type = "alert-info";
+                    alert_data = "<div class=\"alert " + alert_type + " alert-dismissible fade show\" role=\"alert\">" +
+                        "           <strong>" + alert_response + "</strong>" +
+                        "           <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>" +
+                        "         </div>";
                 } else {
                     alert_response = result;
                     alert_type = "alert-success";
+                    alert_data = `
+                        <div id="successModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+                            <div class="modal-dialog gradient-custom-modal" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-body gradient-custom-modal">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="successModalClose">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button> ` + result + `
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+                            $("#successModal").modal('show');
+                            $("#successModalClose").click(function() {
+                                $("#successModal").modal('hide');
+                            });
+                        </script>
+                    `;
                 }
             }).fail(function (jqXHR, textStatus, error) {
                 alert_response = "Unable to subscribe at the moment! | " + textStatus + " | " + error;
+                alert_data = "<div class=\"alert " + alert_type + " alert-dismissible fade show\" role=\"alert\">" +
+                    "           <strong>" + alert_response + "</strong>" +
+                    "           <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>" +
+                    "         </div>";
             }).always(function () {
-                let alert_data = "<div class=\"alert " + alert_type + " alert-dismissible fade show\" role=\"alert\">" +
-                    "                <strong>" + alert_response + "</strong>" +
-                    "                <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>" +
-                    "            </div>";
+                $("#alert_placeholder").empty();
                 $("#alert_placeholder").append(alert_data);
             });
         }
