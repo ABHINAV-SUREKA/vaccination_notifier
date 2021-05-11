@@ -3,7 +3,7 @@ const nodemailer = require("nodemailer")
     , content = require('./email_content');
 
 
-// Setting up SMTP transport connection (Using SendGrid)
+/*// Setting up SMTP transport connection (Using SendGrid)
 let transport = nodemailer.createTransport({
     host: "smtp.sendgrid.net",
     port: 465,
@@ -13,7 +13,7 @@ let transport = nodemailer.createTransport({
         pass: process.env.SENDGRID_API_KEY,
     },
     debug: true
-});
+});*/
 
 // for running in local machine, use below transport config
 /*let transport = nodemailer.createTransport({
@@ -26,7 +26,7 @@ let transport = nodemailer.createTransport({
 });*/
 
 // for sending mail using AWS SES
-/*let transport = nodemailer.createTransport({
+let transport = nodemailer.createTransport({
     host: "email-smtp.ap-south-1.amazonaws.com",
     port: 465,
     secure: true, // true for 465, false for other ports
@@ -35,7 +35,7 @@ let transport = nodemailer.createTransport({
         pass: process.env.SMTP_PASS,
     },
     debug: true
-});*/
+});
 
 
 // Send email notification
