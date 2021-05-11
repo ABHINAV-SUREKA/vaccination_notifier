@@ -54,13 +54,6 @@ $(function(){
                 } else if (result.indexOf("A verification email has been sent") > -1) {
                     alert_response = result;
                     alert_type = "alert-info";
-                    alert_data = "<div class=\"alert " + alert_type + " alert-dismissible fade show\" role=\"alert\">" +
-                        "           <strong>" + alert_response + "</strong>" +
-                        "           <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>" +
-                        "         </div>";
-                } else {
-                    alert_response = result;
-                    alert_type = "alert-success";
                     alert_data = `
                         <div id="successModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
                             <div class="modal-dialog gradient-custom-modal" role="document">
@@ -80,6 +73,13 @@ $(function(){
                             });
                         </script>
                     `;
+                } else {
+                    alert_response = result;
+                    alert_type = "alert-success";
+                    alert_data = "<div class=\"alert " + alert_type + " alert-dismissible fade show\" role=\"alert\">" +
+                        "           <strong>" + alert_response + "</strong>" +
+                        "           <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>" +
+                        "         </div>";
                 }
             }).fail(function (jqXHR, textStatus, error) {
                 alert_response = "Unable to subscribe at the moment! | " + textStatus + " | " + error;
