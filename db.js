@@ -9,7 +9,10 @@ var database;
 
 
 let dbConnect = async (errorHandler) => {
-    let client = new MongoClient(uri);
+    let client = new MongoClient(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    });
     try {
         await client.connect();
         database = client.db(dbName);
