@@ -28,8 +28,8 @@ cron.schedule("*/2 * * * *", async () => {
         const cursor = await db.findAllDoc(errorHandler);
         const results = await cursor.toArray();
         for (const element of results) {
+            const centerFilteredData = await slot.checkSlots(element, errorHandler);
             if (!element.hasOwnProperty("last_notified_ts") || element.last_notified_ts.toString().length == 0) {
-                const centerFilteredData = await slot.checkSlots(element, errorHandler);
                 if (centerFilteredData.length > 0) {
                     const emailResponse = await email.emailNotifier(element.email, centerFilteredData, errorHandler);
                     if (emailResponse) {
@@ -48,7 +48,6 @@ cron.schedule("*/2 * * * *", async () => {
                 switch (element.frequency) {
                     case "every hour":
                         if (60 <= timeDiffInMins) {
-                            let centerFilteredData = await slot.checkSlots(element, errorHandler);
                             if (centerFilteredData.length > 0) {
                                 const emailResponse = await email.emailNotifier(element.email, centerFilteredData, errorHandler);
                                 if (emailResponse) {
@@ -66,7 +65,6 @@ cron.schedule("*/2 * * * *", async () => {
                         break;
                     case "every 3 hours":
                         if (180 <= timeDiffInMins) {
-                            let centerFilteredData = await slot.checkSlots(element, errorHandler);
                             if (centerFilteredData.length > 0) {
                                 const emailResponse = await email.emailNotifier(element.email, centerFilteredData, errorHandler);
                                 if (emailResponse) {
@@ -84,7 +82,6 @@ cron.schedule("*/2 * * * *", async () => {
                         break;
                     case "every 6 hours":
                         if (360 <= timeDiffInMins) {
-                            let centerFilteredData = await slot.checkSlots(element, errorHandler);
                             if (centerFilteredData.length > 0) {
                                 const emailResponse = await email.emailNotifier(element.email, centerFilteredData, errorHandler);
                                 if (emailResponse) {
@@ -102,7 +99,6 @@ cron.schedule("*/2 * * * *", async () => {
                         break;
                     case "every 12 hours":
                         if (720 <= timeDiffInMins) {
-                            let centerFilteredData = await slot.checkSlots(element, errorHandler);
                             if (centerFilteredData.length > 0) {
                                 const emailResponse = await email.emailNotifier(element.email, centerFilteredData, errorHandler);
                                 if (emailResponse) {
