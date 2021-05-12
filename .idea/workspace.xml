@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9d597380-0272-44fb-b88e-20962fe3a7ce" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+    <list default="true" id="9d597380-0272-44fb-b88e-20962fe3a7ce" name="Default Changelist" comment="readme">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,17 +73,18 @@
     <MESSAGE value="fixing email verification" />
     <MESSAGE value="fixing views" />
     <MESSAGE value="fixing email" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixing email" />
+    <MESSAGE value="readme" />
+    <option name="LAST_COMMIT_MESSAGE" value="readme" />
   </component>
   <component name="WindowStateProjectService">
     <state x="593" y="328" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1620403988680">
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
     <state x="593" y="328" key="#com.intellij.fileTypes.FileTypeChooser/0.23.1792.1019@0.23.1792.1019" timestamp="1620403988680" />
-    <state x="435" y="90" key="CommitChangelistDialog2" timestamp="1620798704201">
+    <state x="435" y="90" key="CommitChangelistDialog2" timestamp="1620813196442">
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
-    <state x="435" y="90" key="CommitChangelistDialog2/0.23.1792.1019@0.23.1792.1019" timestamp="1620798704201" />
+    <state x="435" y="90" key="CommitChangelistDialog2/0.23.1792.1019@0.23.1792.1019" timestamp="1620813196442" />
     <state x="142" y="100" key="DiffContextDialog" timestamp="1620648700462">
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
@@ -113,10 +113,10 @@
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
     <state width="1507" height="269" key="GridCell.Tab.0.right/0.23.1792.1019@0.23.1792.1019" timestamp="1620138077650" />
-    <state x="458" y="259" key="Vcs.Push.Dialog.v2" timestamp="1620798705570">
+    <state x="458" y="259" key="Vcs.Push.Dialog.v2" timestamp="1620800130300">
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
-    <state x="458" y="259" key="Vcs.Push.Dialog.v2/0.23.1792.1019@0.23.1792.1019" timestamp="1620798705570" />
+    <state x="458" y="259" key="Vcs.Push.Dialog.v2/0.23.1792.1019@0.23.1792.1019" timestamp="1620800130300" />
     <state x="478" y="136" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1620578656025">
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
