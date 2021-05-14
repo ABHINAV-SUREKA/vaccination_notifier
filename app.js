@@ -21,7 +21,7 @@ let errorHandler = (error) => { console.log("Error encountered: " + error); }
 
 
 // Send periodic emails to subscribers
-cron.schedule("*/2 * * * *", async () => {
+cron.schedule("*/5 * * * *", async () => {
     console.log("cron running");
     if (undefined == await db.getDb(errorHandler)) {
         console.log("Failed to connect to MongoDB!");
