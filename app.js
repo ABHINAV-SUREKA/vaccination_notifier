@@ -58,7 +58,7 @@ app.get("/action/:token", verifyToken, async (request,response) => {
             result = await db.insertOneDoc({
                 email: request.authenticatedData.user.email,
                 frequency: request.authenticatedData.user.frequency,
-                age: request.authenticatedData.user.age,
+                age: parseInt(request.authenticatedData.user.age),
                 location: request.authenticatedData.user.location,
                 location_value: request.authenticatedData.user.location_value,
             }, emailCollectionName, errorHandler);
@@ -91,7 +91,7 @@ app.post("/action", async (request,response) => {
                     result = await db.updateOneDoc({email: request.body.email}, {
                         $set: {
                             frequency: request.body.frequency,
-                            age: request.body.age,
+                            age: parseInt(request.body.age),
                             location: request.body.location,
                             location_value: request.body.location_value,
                         }
