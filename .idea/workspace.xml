@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9d597380-0272-44fb-b88e-20962fe3a7ce" name="Default Changelist" comment="updating prefernces">
+    <list default="true" id="9d597380-0272-44fb-b88e-20962fe3a7ce" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/bot_content.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crons.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bot.js" beforeDir="false" afterPath="$PROJECT_DIR$/bot.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cowin.js" beforeDir="false" afterPath="$PROJECT_DIR$/cowin.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.js" beforeDir="false" afterPath="$PROJECT_DIR$/db.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/email.js" beforeDir="false" afterPath="$PROJECT_DIR$/email.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,19 +79,23 @@
     <MESSAGE value="fixing views" />
     <MESSAGE value="fixing email" />
     <MESSAGE value="readme" />
-    <MESSAGE value="updating prefernces" />
     <MESSAGE value="optimizations" />
-    <option name="LAST_COMMIT_MESSAGE" value="optimizations" />
+    <MESSAGE value="updating prefernces" />
+    <option name="LAST_COMMIT_MESSAGE" value="updating prefernces" />
   </component>
   <component name="WindowStateProjectService">
     <state x="593" y="328" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1620403988680">
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
     <state x="593" y="328" key="#com.intellij.fileTypes.FileTypeChooser/0.23.1792.1019@0.23.1792.1019" timestamp="1620403988680" />
-    <state x="435" y="90" width="1209" height="835" key="CommitChangelistDialog2" timestamp="1620964156450">
+    <state x="696" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1621005785446">
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
-    <state x="435" y="90" width="1209" height="835" key="CommitChangelistDialog2/0.23.1792.1019@0.23.1792.1019" timestamp="1620964156450" />
+    <state x="696" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.23.1792.1019@0.23.1792.1019" timestamp="1621005785446" />
+    <state x="435" y="90" width="1209" height="835" key="CommitChangelistDialog2" timestamp="1620964747684">
+      <screen x="0" y="23" width="1792" height="1019" />
+    </state>
+    <state x="435" y="90" width="1209" height="835" key="CommitChangelistDialog2/0.23.1792.1019@0.23.1792.1019" timestamp="1620964747684" />
     <state x="142" y="100" key="DiffContextDialog" timestamp="1620648700462">
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
@@ -113,17 +124,17 @@
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
     <state width="1507" height="269" key="GridCell.Tab.0.right/0.23.1792.1019@0.23.1792.1019" timestamp="1620138077650" />
-    <state x="458" y="259" key="Vcs.Push.Dialog.v2" timestamp="1620964158408">
+    <state x="458" y="259" key="Vcs.Push.Dialog.v2" timestamp="1620964749368">
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
-    <state x="458" y="259" key="Vcs.Push.Dialog.v2/0.23.1792.1019@0.23.1792.1019" timestamp="1620964158408" />
+    <state x="458" y="259" key="Vcs.Push.Dialog.v2/0.23.1792.1019@0.23.1792.1019" timestamp="1620964749368" />
     <state x="478" y="136" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1620578656025">
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
     <state x="478" y="136" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.23.1792.1019@0.23.1792.1019" timestamp="1620578656024" />
-    <state x="426" y="133" width="1096" height="757" key="find.popup" timestamp="1620963904607">
+    <state x="426" y="133" width="1096" height="757" key="find.popup" timestamp="1621005778692">
       <screen x="0" y="23" width="1792" height="1019" />
     </state>
-    <state x="426" y="133" width="1096" height="757" key="find.popup/0.23.1792.1019@0.23.1792.1019" timestamp="1620963904607" />
+    <state x="426" y="133" width="1096" height="757" key="find.popup/0.23.1792.1019@0.23.1792.1019" timestamp="1621005778692" />
   </component>
 </project>

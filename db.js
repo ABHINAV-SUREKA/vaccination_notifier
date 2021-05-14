@@ -37,9 +37,9 @@ let findOneDoc = async (findCondition,collectionName,errorHandler) => {
     }
 }
 
-let findAllDoc = async (collectionName,errorHandler) => {
+let findAllDoc = async (findCondition,collectionName,errorHandler) => {
     try {
-        return database.collection(collectionName).find({});
+        return database.collection(collectionName).find(findCondition);
     } catch (error) {
         errorHandler(error);
     }

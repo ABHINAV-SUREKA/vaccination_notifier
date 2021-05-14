@@ -1,5 +1,4 @@
 const nodemailer = require("nodemailer")
-    , db = require( './db' )
     , content = require('./email_content');
 
 
