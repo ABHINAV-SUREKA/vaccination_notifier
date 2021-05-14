@@ -384,6 +384,14 @@ bot.command(["notifyslot","Notifyslot","NOTIFYSLOT"], frequencyMiddleware, async
 bot.hears(["notifyslot","Notifyslot","NOTIFYSLOT"], frequencyMiddleware, async (context) => {
     await console.log(context.from.id);
 });
+// frequency
+bot.command(["frequency","Frequency","FREQUENCY"], frequencyMiddleware, async (context) => {
+    await console.log(context.from.id);
+});
+bot.hears(["frequency","Frequency","FREQUENCY"], frequencyMiddleware, async (context) => {
+    await console.log(context.from.id);
+});
+
 // age
 bot.action("age", async (context) => {
     await context.answerCbQuery();
