@@ -391,7 +391,6 @@ bot.command(["frequency","Frequency","FREQUENCY"], frequencyMiddleware, async (c
 bot.hears(["frequency","Frequency","FREQUENCY"], frequencyMiddleware, async (context) => {
     await console.log(context.from.id);
 });
-
 // age
 bot.action("age", async (context) => {
     await context.answerCbQuery();
