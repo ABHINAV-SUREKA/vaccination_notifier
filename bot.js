@@ -189,7 +189,8 @@ let pinMiddleware = async (context,next) => {
 };
 let stateMiddleware = async (context,next) => {
     try {
-        await context.deleteMessage(); // deletes original message before sending another
+        if (context.update.callback_query)
+            await context.deleteMessage(); // deletes original message before sending another
         let promised_state_data = await cowin.getStates(errorHandler);
         if (promised_state_data && promised_state_data.states) {
             let dynamicKeyboardData = await promised_state_data.states.map((state) => {
@@ -208,7 +209,8 @@ let stateMiddleware = async (context,next) => {
 };
 let districtMiddleware = async(context,next) => {
     try {
-        await context.deleteMessage();
+        if (context.update.callback_query)
+            await context.deleteMessage();
         let promised_district_data = await cowin.getDistricts(context.match.input.split(" ")[1], errorHandler);
         if (promised_district_data && promised_district_data.districts) {
             let dynamicKeyboardData = await promised_district_data.districts.map((district) => {
@@ -227,7 +229,8 @@ let districtMiddleware = async(context,next) => {
 };
 let districtMiddleware2 = async(context,next) => {
     try {
-        await context.deleteMessage();
+        if (context.update.callback_query)
+            await context.deleteMessage();
         let result = await db.findOneDoc({from_id: context.from.id}, telegramCollectionName, errorHandler);
         if (result && result.hasOwnProperty("_id")) {
             result = await db.updateOneDoc({from_id: context.from.id}, {
@@ -308,7 +311,8 @@ let frequencyMiddleware = async (context,next) => {
 };
 let notifySlotMiddleware = async (context,next) => {
     try {
-        await context.deleteMessage();
+        if (context.update.callback_query)
+            await context.deleteMessage();
         let result = await db.findOneDoc({from_id: context.from.id}, telegramCollectionName, errorHandler);
         if (result && result.hasOwnProperty("_id")) {
             result = await db.updateOneDoc({from_id: context.from.id}, {
