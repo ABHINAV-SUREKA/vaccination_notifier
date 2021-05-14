@@ -554,8 +554,8 @@ let botNotifier = async (toId,centerFilteredData,errorHandler) => { // will be c
         }
         await bot.telegram.sendMessage(toId, slotsAvailableMessage, mainKeyboard);
     } catch (error) {
-        errorHandler(error);
-        throw new Error("Error sending message");
+        await errorHandler(error);
+        //throw new Error("Error sending message");
     }
 }
 
