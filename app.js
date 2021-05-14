@@ -10,7 +10,8 @@ const express = require("express")
     , email = require("./email")
     , slot = require("./slot")
     , db = require( './db' )
-    , content = require('./web_content');
+    , content = require('./web_content')
+    , collectionName = "users";
 
 dotenv.config();
 app.use(express.static(static_path));
@@ -25,7 +26,7 @@ cron.schedule("*/2 * * * *", async () => {
     if (undefined == await db.getDb(errorHandler)) {
         console.log("Failed to connect to MongoDB!");
     } else {
-        const cursor = await db.findAllDoc(errorHandler);
+        const cursor = await db.findAllDoc(collectionName,errorHandler);
         const results = await cursor.toArray();
         for (const element of results) {
             const centerFilteredData = await slot.checkSlots(element, errorHandler);
@@ -38,7 +39,7 @@ cron.schedule("*/2 * * * *", async () => {
                         let result = await db.updateOneDoc({email: element.email},{
                             $set: {
                                 last_notified_ts: notifiedTimestamp,
-                            }}, errorHandler);
+                            }}, collectionName, errorHandler);
                         if (result.modifiedCount > 0)
                             await console.log("Updated 'last_notified_ts' for " + element.email + " with " + notifiedTimestamp);
                     }
@@ -56,7 +57,7 @@ cron.schedule("*/2 * * * *", async () => {
                                     let result = await db.updateOneDoc({email: element.email},{
                                         $set: {
                                             last_notified_ts: notifiedTimestamp,
-                                        }}, errorHandler);
+                                        }}, collectionName, errorHandler);
                                     if (result.modifiedCount > 0)
                                         await console.log("Updated 'last_notified_ts' for " + element.email + " with " + notifiedTimestamp);
                                 }
@@ -73,7 +74,7 @@ cron.schedule("*/2 * * * *", async () => {
                                     let result = await db.updateOneDoc({email: element.email},{
                                         $set: {
                                             last_notified_ts: notifiedTimestamp,
-                                        }}, errorHandler);
+                                        }}, collectionName, errorHandler);
                                     if (result.modifiedCount > 0)
                                         await console.log("Updated 'last_notified_ts' for " + element.email + " with " + notifiedTimestamp);
                                 }
@@ -90,7 +91,7 @@ cron.schedule("*/2 * * * *", async () => {
                                     let result = await db.updateOneDoc({email: element.email},{
                                         $set: {
                                             last_notified_ts: notifiedTimestamp,
-                                        }}, errorHandler);
+                                        }}, collectionName, errorHandler);
                                     if (result.modifiedCount > 0)
                                         await console.log("Updated 'last_notified_ts' for " + element.email + " with " + notifiedTimestamp);
                                 }
@@ -107,7 +108,7 @@ cron.schedule("*/2 * * * *", async () => {
                                     let result = await db.updateOneDoc({email: element.email},{
                                         $set: {
                                             last_notified_ts: notifiedTimestamp,
-                                        }}, errorHandler);
+                                        }}, collectionName, errorHandler);
                                     if (result.modifiedCount > 0)
                                         await console.log("Updated 'last_notified_ts' for " + element.email + " with " + notifiedTimestamp);
                                 }
@@ -124,7 +125,7 @@ cron.schedule("*/2 * * * *", async () => {
                                     let result = await db.updateOneDoc({email: element.email},{
                                         $set: {
                                             last_notified_ts: notifiedTimestamp,
-                                        }}, errorHandler);
+                                        }}, collectionName, errorHandler);
                                     if (result.modifiedCount > 0)
                                         await console.log("Updated 'last_notified_ts' for " + element.email + " with " + notifiedTimestamp);
                                 }
@@ -165,7 +166,7 @@ app.get("/district_list", async (request,response) => {
 });
 app.get("/action/:token", verifyToken, async (request,response) => {
     if (request.authenticatedData != null) {
-        let result = await db.findOneDoc({email: request.authenticatedData.user.email}, errorHandler);
+        let result = await db.findOneDoc({email: request.authenticatedData.user.email}, collectionName, errorHandler);
         let verifyMsg = "";
         if (result && result.hasOwnProperty("_id")) {
             verifyMsg = await encodeURIComponent("User already subscribed");
@@ -177,7 +178,7 @@ app.get("/action/:token", verifyToken, async (request,response) => {
                 age: request.authenticatedData.user.age,
                 location: request.authenticatedData.user.location,
                 location_value: request.authenticatedData.user.location_value,
-            }, errorHandler);
+            }, collectionName, errorHandler);
             if (result.insertedCount >= 1) {
                 verifyMsg = encodeURIComponent("User successfully subscribed to receive email notification!");
                 await response.redirect("/?verifyMsg=" + verifyMsg);
@@ -193,7 +194,7 @@ app.post("/action", async (request,response) => {
             await response.send("");
         } else {
             if (request.body.subscribe != null) {
-                let result = await db.findOneDoc({email: request.body.email}, errorHandler);
+                let result = await db.findOneDoc({email: request.body.email}, collectionName, errorHandler);
                 if (!result) {
                     const token = await jwt.sign({user: request.body}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '30m'});
                     const tokenData = `<h3>Please click on below link to start receiving vaccine notifications</h3>
@@ -211,7 +212,7 @@ app.post("/action", async (request,response) => {
                             location: request.body.location,
                             location_value: request.body.location_value,
                         }
-                    }, errorHandler);
+                    }, collectionName, errorHandler);
                     if (result.modifiedCount > 0)
                         await response.send("Updated notification preferences for " + request.body.email + " | User already subscribed!");
                     else if (result.modifiedCount == 0 && result.matchedCount > 0)
@@ -221,11 +222,11 @@ app.post("/action", async (request,response) => {
                 } else
                     await response.send("");
             } else if (request.body.unsubscribe != null) {
-                let result = await db.findOneDoc({email: request.body.email}, errorHandler);
+                let result = await db.findOneDoc({email: request.body.email}, collectionName, errorHandler);
                 if (result == null) {
                     await response.send(request.body.email + " is not subscribed to email notification");
                 } else if (result && result.hasOwnProperty("_id")) {
-                    result = await db.deleteManyDoc({email: request.body.email}, errorHandler);
+                    result = await db.deleteManyDoc({email: request.body.email}, collectionName, errorHandler);
                     if (result.deletedCount >= 1)
                         await response.send(request.body.email + " unsubscribed from email notification!");
                     else

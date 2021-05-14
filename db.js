@@ -1,8 +1,7 @@
 const MongoClient = require("mongodb").MongoClient
     , dotenv = require('dotenv')
     , uri = process.env.DB_URI  // for running in local machine, change to: uri = "mongodb://localhost:27017"
-    , dbName = "Users"
-    , collectionName = "users";
+    , dbName = "Users";
 
 dotenv.config();
 var database;
@@ -30,7 +29,7 @@ let getDb = async (errorHandler) => {
     }
 }
 
-let findOneDoc = async (findCondition,errorHandler) => {
+let findOneDoc = async (findCondition,collectionName,errorHandler) => {
     try {
         return database.collection(collectionName).findOne(findCondition);
     } catch (error) {
@@ -38,7 +37,7 @@ let findOneDoc = async (findCondition,errorHandler) => {
     }
 }
 
-let findAllDoc = async (errorHandler) => {
+let findAllDoc = async (collectionName,errorHandler) => {
     try {
         return database.collection(collectionName).find({});
     } catch (error) {
@@ -46,7 +45,7 @@ let findAllDoc = async (errorHandler) => {
     }
 }
 
-let insertOneDoc = async (newDoc,errorHandler) => {
+let insertOneDoc = async (newDoc,collectionName,errorHandler) => {
     try {
         return await database.collection(collectionName).insertOne(newDoc);
     } catch (error) {
@@ -54,7 +53,7 @@ let insertOneDoc = async (newDoc,errorHandler) => {
     }
 }
 
-let updateOneDoc = async (findCondition,updatedDoc,errorHandler) => {
+let updateOneDoc = async (findCondition,updatedDoc,collectionName,errorHandler) => {
     try {
         return await database.collection(collectionName).updateOne(findCondition,updatedDoc);
     } catch (error) {
@@ -62,7 +61,7 @@ let updateOneDoc = async (findCondition,updatedDoc,errorHandler) => {
     }
 }
 
-let deleteManyDoc = async (findCondition,errorHandler) => {
+let deleteManyDoc = async (findCondition,collectionName,errorHandler) => {
     try {
         return await database.collection(collectionName).deleteMany(findCondition);
     } catch (error) {
