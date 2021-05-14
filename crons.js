@@ -7,9 +7,9 @@ const cron = require('node-cron')
     , emailCollectionName = "users";
 
 
-// Send periodic notifications to telegram subscribers with age < 45 every 10 mins
+// Send periodic notifications to telegram subscribers with age < 45 every 5 mins
 let telegram18Cron = async (errorHandler) => {
-    await cron.schedule("*/10 * * * *", async () => {
+    await cron.schedule("*/5 * * * *", async () => {
         try {
             await console.log("telegram 18 cron running at: " + new Date(Date.now()));
             if (undefined == await db.getDb(errorHandler)) {
@@ -40,7 +40,7 @@ let telegram18Cron = async (errorHandler) => {
 
 // Send periodic notifications to telegram subscribers with age >= 45 based on preference
 let telegram45Cron = async (errorHandler) => {
-    await cron.schedule("*/5 * * * *", async () => {
+    await cron.schedule("*/10 * * * *", async () => {
         try {
             await console.log("telegram 45 cron running at: " + new Date(Date.now()));
             if (undefined == await db.getDb(errorHandler)) {
@@ -158,7 +158,7 @@ let telegram45Cron = async (errorHandler) => {
 
 // Send periodic notifications to all subscribers
 let emailCron = async (errorHandler) => {
-    await cron.schedule("*/1 * * * *", async () => {
+    await cron.schedule("*/10 * * * *", async () => {
         try {
             await console.log("email cron running at: " + new Date(Date.now()));
             if (undefined == await db.getDb(errorHandler)) {
@@ -262,7 +262,6 @@ let emailCron = async (errorHandler) => {
         }
     });
 };
-
 
 
 
