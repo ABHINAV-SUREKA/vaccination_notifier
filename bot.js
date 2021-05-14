@@ -15,15 +15,20 @@ I will help you to:
 
 Please input <b>age</b> and <b>location</b>`
     , privacyMessage = `
-\u{1F50F} <b>Find Vacc Bot</b> does not store or access any personal information except:
+\u{1F50F} Privacy Policy
 
- 1) The age and location preferences set by you.
- 2) Your telegram user id to uniquely identify you and send results based on your preferences.
+<b>Find Vacc Bot</b> does not store or access any personal information except:
+
+1) The age and location preferences set by you.
+2) Your telegram user id to uniquely identify you and send results based on your preferences.
  
+<b>Find Vacc Bot</b> is a 3rd-party solution that fetches data from CoWin APIs.
+
 To delete all your information, click <b>/delete</b> or type <b>delete</b>
 `
     , helpMessage = `
 \u{2753} Help
+
 <b>Start</b>
 To start the bot again, click <b>/start</b>
 
@@ -49,7 +54,7 @@ To change location preference, click <b>/location</b> or type <b>location</b>
 To change frequency of periodic notifications, click <b>/frequency</b> or type <b>frequency</b>
 
 <b>Delete</b>
-To delete all your information, click <b>/delete</b> or type <b>delete</b>
+To delete all your information (or pause alerts), click <b>/delete</b> or type <b>delete</b>
 `
     , ageMessage = "Please enter desired age"
     , locationMessage = "Please select desired location"
