@@ -55,6 +55,8 @@ To change frequency of periodic notifications, click <b>/frequency</b> or type <
 
 <b>Delete</b>
 To delete all your information (or pause alerts), click <b>/delete</b> or type <b>delete</b>
+
+<i>Reach out to t.me/abhinavsureka69 for queries/feedback</i>
 `
     , ageMessage = "Please enter desired age"
     , locationMessage = "Please select desired location"
