@@ -185,6 +185,23 @@ let emailCron = async (errorHandler) => {
                     } else {
                         let timeDiffInMins = await Math.abs((Date.now() - element.last_notified_ts) / (1000 * 60));
                         switch (element.frequency) {
+                            case "every 30 mins":
+                                if (30 <= timeDiffInMins) {
+                                    if (centerFilteredData.length > 0) {
+                                        const emailResponse = await email.emailNotifier(element.email, centerFilteredData, errorHandler);
+                                        if (emailResponse) {
+                                            const notifiedTimestamp = await Date.now();
+                                            await console.log("Notification sent to " + element.email + " on " + new Date(notifiedTimestamp));
+                                            let result = await db.updateOneDoc({email: element.email},{
+                                                $set: {
+                                                    last_notified_ts: notifiedTimestamp,
+                                                }}, emailCollectionName, errorHandler);
+                                            if (result.modifiedCount > 0)
+                                                await console.log("Updated 'last_notified_ts' for " + element.email + " with " + notifiedTimestamp);
+                                        }
+                                    }
+                                }
+                                break;
                             case "every hour":
                                 if (60 <= timeDiffInMins) {
                                     if (centerFilteredData.length > 0) {
