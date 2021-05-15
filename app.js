@@ -71,7 +71,7 @@ app.get("/action/:token", verifyToken, async (request,response) => {
     } else await response.redirect("/");
 });
 app.post("/action", async (request,response) => {
-    console.log(request);
+    console.log(request.body);
     try {
         if (undefined == await db.getDb(errorHandler)) {
             await response.send("");
