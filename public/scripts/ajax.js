@@ -1,8 +1,12 @@
 $(function(){
-    const url = "https://api.ipify.org/?format=json"
+    let url = "https://api.ipify.org/?format=json";
     fetch(url)
         .then(response => response.json())
         .then(data => console.log(data));
+    url = "https://ipinfo.io/json";
+    fetch(url)
+        .then(response => response.json())
+        .then(data => console.log(JSON.stringify(data)));
     $("#records").DataTable();
     let district_data_block = "";
     let urlParams = new URLSearchParams(window.location.search);
