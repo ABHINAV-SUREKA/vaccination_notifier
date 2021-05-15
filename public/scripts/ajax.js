@@ -1,4 +1,8 @@
 $(function(){
+    const url = "https://api.ipify.org/?format=json"
+    fetch(url)
+        .then(response => response.json())
+        .then(data => console.log(data));
     $("#records").DataTable();
     let district_data_block = "";
     let urlParams = new URLSearchParams(window.location.search);
