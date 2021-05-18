@@ -9,7 +9,7 @@ const cron = require('node-cron')
 
 // Send periodic notifications to telegram subscribers with age < 45 every 5 mins
 let telegram18Cron = async (errorHandler) => {
-    await cron.schedule("*/5 * * * *", async () => {
+    await cron.schedule("*/3 * * * *", async () => {
         try {
             await console.log("telegram 18 cron running at: " + new Date(Date.now()));
             if (undefined == await db.getDb(errorHandler)) {
